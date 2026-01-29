@@ -1,0 +1,63 @@
+<odoo>
+    <!-- Server Action to Update Evaluation Groups -->
+    <record id="action_update_evaluation_groups" model="ir.actions.server">
+        <field name="name">Update Evaluation Groups</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_update_evaluation_groups()</field>
+    </record>
+
+    <record id="view_hr_employee_form_inherit_employee_type" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.employee_type</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="emp_eval_type"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Evaluations">
+
+                    <field name="evaluation_ids" limit="10" options="{'no_create': True}">
+                        <list create="0" delete="0"
+                              decoration-success="state == 'done'"
+                              decoration-info="state == 'draft'">
+                            <field name="start_date" readonly="1"/>
+                            <field name="end_date" readonly="1"/>
+                            <field name="total_score" readonly="1"/>
+                            <field name="manager_comment" string="Feedback" readonly="1"/>
+                            <field name="employee_comment" string="Employee's Remarks"/>
+                            <field name="state" widget="badge" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_employee_public_form_inherit_evaluation" model="ir.ui.view">
+        <field name="name">hr.employee.public.form.inherit.evaluation</field>
+        <field name="model">hr.employee.public</field>
+        <field name="inherit_id" ref="hr.hr_employee_public_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Evaluations">
+                    <field name="evaluation_ids">
+                        <list create="0" delete="0"
+                              decoration-success="state == 'done'"
+                              decoration-info="state == 'draft'">
+                            <field name="start_date" readonly="1"/>
+                            <field name="end_date" readonly="1"/>
+                            <field name="total_score" readonly="1"/>
+                            <field name="employee_comment" string="Employee's Remarks"/>
+                            <field name="state" widget="badge" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

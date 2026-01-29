@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="email_template_evaluation_reminder" model="mail.template">
+            <field name="name">Evaluation Reminder</field>
+            <field name="model_id" ref="model_emp_evaluation"/>
+            <field name="email_from">${(user.email or 'admin@example.com')}</field>
+            <field name="subject">Upcoming Employee Evaluation</field>
+
+            <!-- Send ONLY to coach -->
+            <field name="email_to">${object.coach_id.user_id.email}</field>
+
+            <field name="body_html"><![CDATA[
+                <p>Hello ${object.coach_id.name},</p>
+                <p>This is a reminder that the evaluation for <b>${object.employee_id.name}</b> is approaching.</p>
+                <p>Evaluation Period: ${object.start_date} → ${object.end_date}</p>
+            ]]></field>
+        </record>
+
+    <record id="email_template_evaluation_result_employee" model="mail.template">
+            <field name="name">Evaluation Result (Employee)</field>
+            <field name="model_id" ref="model_emp_evaluation"/>
+            <field name="email_from">${(user.email or 'admin@example.com')}</field>
+            <field name="subject">Employee Evaluation Result - ${object.employee_id.name}</field>
+            <field name="email_to">${object.employee_id.work_email}</field>
+            <field name="body_html"><![CDATA[
+                <p>Hello ${object.employee_id.name},</p>
+                <p>Your evaluation for the period <b>${object.start_date}</b> to <b>${object.end_date}</b> has been completed.</p>
+                <p>Total Score: <b>${object.total_score}</b></p>
+                <p>Manager's Feedback: ${object.manager_comment or 'N/A'}</p>
+                <p>Please log in to the system to view the full details.</p>
+                <p>Best regards,</p>
+                <p>${object.manager_id.name}</p>
+            ]]></field>
+        </record>
+
+        <record id="email_template_evaluation_result_manager" model="mail.template">
+            <field name="name">Evaluation Result (Manager)</field>
+            <field name="model_id" ref="model_emp_evaluation"/>
+            <field name="email_from">${(user.email or 'admin@example.com')}</field>
+            <field name="subject">Evaluation Completed - ${object.employee_id.name}</field>
+            <field name="email_to">${object.manager_id.work_email}</field>
+            <field name="body_html"><![CDATA[
+                <p>Hello ${object.manager_id.name},</p>
+                <p>The evaluation for <b>${object.employee_id.name}</b> (Period: ${object.start_date} to ${object.end_date}) has been completed.</p>
+                <p>Total Score: <b>${object.total_score}</b></p>
+                <p>Manager's Feedback: ${object.manager_comment or 'N/A'}</p>
+                <p>Best regards,</p>
+                <p>System Notification</p>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>

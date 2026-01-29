@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_emp_evaluation_employee,emp.evaluation employee,model_emp_evaluation,group_evaluation_employee,1,1,0,0
+access_emp_evaluation_coach,emp.evaluation coach,model_emp_evaluation,group_evaluation_coach,1,1,1,0
+access_emp_evaluation_hr,emp.evaluation hr,model_emp_evaluation,group_evaluation_hr,1,1,1,1
+access_hr_employee_public,hr.employee public,hr.model_hr_employee,base.group_user,1,0,0,0
+access_hr_job_public,hr.job public,hr.model_hr_job,base.group_user,1,0,0,0
+access_hr_department_public,hr.department public,hr.model_hr_department,base.group_user,1,0,0,0

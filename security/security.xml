@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="module_category_evaluation" model="ir.module.category">
+            <field name="name">Employee Evaluation</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Groups -->
+        <record id="group_evaluation_employee" model="res.groups">
+            <field name="name">Employee</field>
+            <field name="category_id" ref="module_category_evaluation"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_evaluation_coach" model="res.groups">
+            <field name="name">Coach</field>
+            <field name="category_id" ref="module_category_evaluation"/>
+            <field name="implied_ids" eval="[(4, ref('group_evaluation_employee'))]"/>
+        </record>
+
+        <record id="group_evaluation_hr" model="res.groups">
+            <field name="name">HR Manager</field>
+            <field name="category_id" ref="module_category_evaluation"/>
+            <field name="implied_ids" eval="[(4, ref('group_evaluation_coach'))]"/>
+        </record>
+
+        <!-- Record Rules -->
+        
+        <!-- Employee: Can see ONLY their own evaluations -->
+        <record id="rule_emp_evaluation_employee" model="ir.rule">
+            <field name="name">Employee: Own Evaluations</field>
+            <field name="model_id" ref="model_emp_evaluation"/>
+            <field name="groups" eval="[(4, ref('group_evaluation_employee'))]"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        </record>
+
+        <!-- Coach: Can see evaluations they created or where they are Coach/Manager -->
+        <record id="rule_emp_evaluation_coach" model="ir.rule">
+            <field name="name">Coach: Subordinates Evaluations</field>
+            <field name="model_id" ref="model_emp_evaluation"/>
+            <field name="groups" eval="[(4, ref('group_evaluation_coach'))]"/>
+            <field name="domain_force">['|', '|', ('create_uid', '=', user.id), ('employee_id.coach_id.user_id', '=', user.id), ('employee_id.parent_id.user_id', '=', user.id)]</field>
+        </record>
+
+        <!-- HR: Can see all evaluations -->
+        <record id="rule_emp_evaluation_hr" model="ir.rule">
+            <field name="name">HR: All Evaluations</field>
+            <field name="model_id" ref="model_emp_evaluation"/>
+            <field name="groups" eval="[(4, ref('group_evaluation_hr'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- HR Employee Selection Rule: Coach sees only their subordinates -->
+        <record id="rule_hr_employee_evaluation_coach" model="ir.rule">
+            <field name="name">Coach: Subordinates Visibility</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="groups" eval="[(4, ref('group_evaluation_coach'))]"/>
+            <field name="domain_force">['|', '|', ('user_id', '=', user.id), ('coach_id.user_id', '=', user.id), ('parent_id.user_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_hr_employee_evaluation_hr" model="ir.rule">
+            <field name="name">HR: Global Employee Visibility</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="groups" eval="[(4, ref('group_evaluation_hr'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+
+{
+    'name': 'Evaluation',
+    'version': '18.0.1.0.0',
+    'author': 'Yohannes Shiwerekey',
+    'category': 'Human Resources',
+    'summary': 'Integrate Survey Matrix into HR Appraisal for employee evaluations',
+    'depends': ['base', 'hr', 'hr_appraisal', 'mail'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'views/evaluation_form.xml',
+        'views/hr_employee_inherit.xml',
+        'views/evaluation_menu.xml',
+        'data/email_templates.xml',
+        'data/cron.xml',
+        'reports/report_evaluation.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'evaluation_employee/static/src/css/radio_style.css',
+            'evaluation_employee/static/src/js/dynamic_menu.js',
+        ],
+    },
+    'application': True,
+    'installable': True,
+    'license': 'LGPL-3',
+}
