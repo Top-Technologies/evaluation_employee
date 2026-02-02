@@ -169,45 +169,93 @@
                                     </thead>
                                     <tbody>
                                         <tr style="background-color:#f7f3f5;">
-                                            <td>1. Adeptness at analyzing facts, problem solving, decision-making, and demonstrating good judgment<br/>እውነታዎችን በመተንተን፣ ችግር በመፍታት፣ ውሳኔ በመስጠት እና ጥሩ የማመዛዘን ችሎታን በማሳየት</td>
+                                            <td>1.Skill and proficiency in carrying out assignments in real time manner<br/>የተሰጡትን ስራዎች በተሰጠው ግዜ ለማከናወን ችሎታ እና ብቃት አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q11" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr style="background-color:#f7f3f5;">
-                                            <td>2. Displays fairness towards all subordinates<br/>ለሁሉም የበታች ሰራተኞች ፍትሃዊነትን ያሳያል።</td>
+                                            <td>2.Possesses skills and knowledge to perform the job competently<br/>ስራውን በብቃት ለማከናወን ችሎታ እና እውቀት አለው።</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q12" widget="radio" nolabel="1" class="o_horizontal_radio" invisible="eval_employee_type != 'supervisor'" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>3. Identifies performance expectations, gives timely feedback and conducts formal<br/>ለአፈፃፀም የሚጠበቁትን ቁልፍ ነገሮች ይለያል, ወቅታዊ አስተያየት ይሰጣል እና የክፍሉን መደበኛ የስራ አፈጻጸም ግምገማዎችን በየግዜው ያካሂዳል.</td>
+                                            <td>3.	Skill at planning, organizing and prioritizing workload<br/>የሥራ ጫናን በማቀድ, በማደራጀት እና ቅድሚያ የመስጠት ችሎታ አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q13" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr style="background-color:#f7f3f5;">
-                                            <td>4. Helps employees to see the potential for developing their skills; assists them in eliminating barriers to their development<br/>ሰራተኞቹ ክህሎቶቻቸውን በማዳበር አቅማቸውን እንዲገነዘቡ ይረዳል; በእድገታቸው ላይ እንቅፋቶችን ለማስወገድ ይረዳቸዋል</td>
+                                            <td>4.Holds self accountable for assigned responsibilities; sees tasks through to completion in a timely manner<br/> ለተሰጡት ኃላፊነቶች እራስን ተጠያቂ ያደርጋል; ሥራዎችን በጊዜው እስከ ማጠናቀቅያ ድረስ ይመለከታል</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q14" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>5. Delegates responsibility where appropriate, based on the employee’s ability and potential<br/>በተቀጣሪው አቅም እና ችሎታ ላይ በመመስረት ሃላፊነትን በተገቢው ቦታ ያስተላልፋል.</td>
+                                            <td>5.Proficiency at improving work methods and procedures as a means toward greater efficiency<br/>ለበለጠ ውጤታማነት የስራ ዘዴዎችን እና ሂደቶችን የማሻሻል ብቃት አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q15" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr style="background-color:#f7f3f5;">
-                                            <td>6. Takes timely and appropriate corrective/disciplinary action with employees<br/>ከሰራተኞቹ ጋር ወቅታዊ እና ተገቢውን የእርምት/የዲሲፕሊን እርምጃ ይወስዳል።</td>
+                                            <td>6.Communicates effectively with supervisor, peers, and customers<br/>ከሱፐርቫይዘሮች፣ እኩዮች እና ደንበኞች ጋር በብቃት ይግባባል</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q16" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>7. Takes specific steps to create and develop their diverse workforce and to promote an inclusive environment.<br/>የተለያዩ የስራ ኃይላቸውን ለመፍጠር እና ለማዳበር እንዲሁም አካታች አካባቢን ለማስተዋወቅ የተወሰኑ እርምጃዎችን ይወስዳል።</td>
+                                            <td>7.Ability to work independently<br/>እራሱን ችሎ የመስራት ብቃት አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q17" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>8.Ability to work cooperatively with supervision or as part of a team<br/>ከክትትል ወይም ከቡድን አካል ጋር በትብብር የመስራት ችሎታ አለው</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q18" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>9.Willingness to take on additional responsibilities<br/>ተጨማሪ ኃላፊነቶችን ለመውሰድ ፈቃደኛነት አለው</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q19" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>10.Reliability (attendance, punctuality, meeting deadlines)<br/>አስተማማኝነት (በመገኘት፣ የስራ ሰዓቱን በማክበር፣ የስብሰባ ቀነ-ገደቦች በመጠበቅ)</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q20" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td>11.Adeptness at analyzing facts, problem solving, decision-making, and demonstrating good judgment<br/>እውነታዎችን በመተንተን፣ ችግር በመፍታት፣ ውሳኔ በመስጠት እና ጥሩ የማመዛዘን ችሎታን በማሳየት</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q21" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td>12.Displays fairness towards all subordinates.<br/>ለሁሉም የበታች ሰራተኞች ፍትሃዊነትን ያሳያል።</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q22" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td>13.Identifies performance expectations, gives timely feedback and conducts formal<br/>ለአፈፃፀም የሚጠበቁትን ቁልፍ ነገሮች ይለያል, ወቅታዊ አስተያየት ይሰጣል እና የክፍሉን መደበኛ የስራ አፈጻጸም ግምገማዎችን በየግዜው ያካሂዳል.</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q23" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td>14.Helps employees to see the potential for developing their skills; assists them in eliminating barriers to their development.<br/>ሰራተኞቹ ክህሎቶቻቸውን በማዳበር አቅማቸውን እንዲገነዘቡ ይረዳል; በእድገታቸው ላይ እንቅፋቶችን ለማስወገድ ይረዳቸዋል</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q24" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td>15.Delegates responsibility where appropriate, based on the employee’s ability and potential.<br/>በተቀጣሪው አቅም እና ችሎታ ላይ በመመስረት ሃላፊነትን በተገቢው ቦታ ያስተላልፋል.</td>
+                                            <td colspan="6" class="radio-row">
+                                                <field name="q25" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                     </tbody>

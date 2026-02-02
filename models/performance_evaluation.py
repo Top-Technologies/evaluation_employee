@@ -87,7 +87,7 @@ class EmpEvaluation(models.Model):
 
 
     # Questions q1–q17
-    for i in range(1, 18):
+    for i in range(1, 26):
         locals()[f'q{i}'] = fields.Selection(rating_selection, string=f"Q{i}")
 
     # -------------------------------------------------------
@@ -109,11 +109,11 @@ class EmpEvaluation(models.Model):
                 rec.department_id = False
                 rec.job_id = False
 
-    @api.depends(*[f'q{i}' for i in range(1, 18)])
+    @api.depends(*[f'q{i}' for i in range(1, 26)])
     def _compute_total_score(self):
         for rec in self:
             total = 0
-            for i in range(1, 18):
+            for i in range(1, 26):
                 val = getattr(rec, f'q{i}')
                 if val and val.isdigit():
                     total += int(val)

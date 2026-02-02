@@ -27,13 +27,21 @@
                 8: '8. Ability to work cooperatively with supervision or as part of a team&lt;br/&gt;ከክትትል ወይም ከቡድን አካል ጋር በትብብር የመስራት ችሎታ አለው',
                 9: '9. Willingness to take on additional responsibilities&lt;br/&gt;ተጨማሪ ኃላፊነቶችን ለመውሰድ ፈቃደኛነት አለው',
                 10: '10. Reliability (attendance, punctuality, meeting deadlines)&lt;br/&gt;አስተማማኝነት (በመገኘት፣ የስራ ሰዓቱን በማክበር፣ የስብሰባ ቀነ-ገደቦች በመጠበቅ)',
-                11: '11. Adeptness at analyzing facts, problem solving, decision-making, and demonstrating good judgment&lt;br/&gt;እውነታዎችን በመተንተን፣ ችግር በመፍታት፣ ውሳኔ በመስጠት እና ጥሩ የማመዛዘን ችሎታን በማሳየት',
-                12: '12. Displays fairness towards all subordinates&lt;br/&gt;ለሁሉም የበታች ሰራተኞች ፍትሃዊነትን ያሳያል።',
-                13: '13. Identifies performance expectations, gives timely feedback and conducts formal&lt;br/&gt;የለአፈፃፀም የሚጠበቁትን ቁልፍ ነገሮች ይለያል, ወቅታዊ አስተያየት ይሰጣል እና የክፍሉን መደበኛ የስራ አፈጻጸም ግምገማዎችን በየግዜው ያካሂዳል.',
-                14: '14.Helps employees to see the potential for developing their skills; assists them in eliminating barriers to their development&lt;br/&gt; ሰራተኞቹ ክህሎቶቻቸውን በማዳበር አቅማቸውን እንዲገነዘቡ ይረዳል; በእድገታቸው ላይ እንቅፋቶችን ለማስወገድ ይረዳቸዋል',
-                15: '15. Delegates responsibility where appropriate, based on the employee’s ability and potential&lt;br/&gt;በተቀጣሪው አቅም እና ችሎታ ላይ በመመስረት ሃላፊነትን በተገቢው ቦታ ያስተላልፋል.',
-                16: '16. Takes timely and appropriate corrective/disciplinary action with employees&lt;br/&gt;ከሰራተኞቹ ጋር ወቅታዊ እና ተገቢውን የእርምት/የዲሲፕሊን እርምጃ ይወስዳል።',
-                17: '17. Takes specific steps to create and develop their diverse workforce and to promote an inclusive environment&lt;br/&gt;የተለያዩ የስራ ኃይላቸውን ለመፍጠር እና ለማዳበር እንዲሁም አካታች አካባቢን ለማስተዋወቅ የተወሰኑ እርምጃዎችን ይወስዳል።'
+                11: '1. Skill and proficiency in carrying out assignments in real time manner&lt;br/&gt; የተሰጡትን ስራዎች በተሰጠው ግዜ ለማከናወን ችሎታ እና ብቃት አለው',
+                12: '2. Possesses skills and knowledge to perform the job competently&lt;br/&gt;ስራውን በብቃት ለማከናወን ችሎታ እና እውቀት አለው።',
+                13: '3. Skill at planning, organizing and prioritizing workloads&lt;br/&gt;የሥራ ጫናን በማቀድ, በማደራጀት እና ቅድሚያ የመስጠት ችሎታ አለው',
+                14: '4. Holds self accountable for assigned responsibilities; sees tasks through to completion in a timely manner&lt;br/&gt;ለተሰጡት ኃላፊነቶች እራስን ተጠያቂ ያደርጋል; ሥራዎችን በጊዜው እስከ ማጠናቀቅያ ድረስ ይመለከታል',
+                15: '5. Proficiency at improving work methods and procedures as a means toward greater efficiency&lt;br/&gt;ለበለጠ ውጤታማነት የስራ ዘዴዎችን እና ሂደቶችን የማሻሻ ብቃት አለው',
+                16: '6. Communicates effectively with supervisor, peers, and customers&lt;br/&gt;ከሱፐርቫይዘሮች፣ እኩዮች እና ደንበኞች ጋር በብቃት ይግባባል',
+                17: '7. Ability to work independently&lt;br/&gt;እራሱን ችሎ የመስራት ብቃት አለው',
+                18: '8. Ability to work cooperatively with supervision or as part of a team&lt;br/&gt;ከክትትል ወይም ከቡድን አካል ጋር በትብብር የመስራት ችሎታ አለው',
+                19: '9. Willingness to take on additional responsibilities&lt;br/&gt;ተጨማሪ ኃላፊነቶችን ለመውሰድ ፈቃደኛነት አለው',
+                20: '10. Reliability (attendance, punctuality, meeting deadlines)&lt;br/&gt;አስተማማኝነት (በመገኘት፣ የስራ ሰዓቱን በማክበር፣ የስብሰባ ቀነ-ገደቦች በመጠበቅ)',
+                21: '11. Adeptness at analyzing facts, problem solving, decision-making, and demonstrating good judgment&lt;br/&gt;እውነታዎችን በመተንተን፣ ችግር በመፍታት፣ ውሳኔ በመስጠት እና ጥሩ የማመዛዘን ችሎታን በማሳየት',
+                22: '12. Displays fairness towards all subordinates&lt;br/&gt;ለሁሉም የበታች ሰራተኞች ፍትሃዊነትን ያሳያል።',
+                23: '13. Identifies performance expectations, gives timely feedback and conducts formal&lt;br/&gt;የለአፈፃፀም የሚጠበቁትን ቁልፍ ነገሮች ይለያል, ወቅታዊ አስተያየት ይሰጣል እና የክፍሉን መደበኛ የስራ አፈጻጸም ግምገማዎችን በየግዜው ያካሂዳል.',
+                24: '14.Helps employees to see the potential for developing their skills; assists them in eliminating barriers to their development&lt;br/&gt; ሰራተኞቹ ክህሎቶቻቸውን በማዳበር አቅማቸውን እንዲገነዘቡ ይረዳል; በእድገታቸው ላይ እንቅፋቶችን ለማስወገድ ይረዳቸዋል',
+                25: '15. Delegates responsibility where appropriate, based on the employee’s ability and potential&lt;br/&gt;በተቀጣሪው አቅም እና ችሎታ ላይ በመመስረት ሃላፊነትን በተገቢው ቦታ ያስተላልፋል.'
             }"/>
 
             <t t-foreach="docs" t-as="o">
@@ -87,7 +95,7 @@
                             </thead>
 
                             <tbody>
-                                <t t-set="q_range" t-value="range(1, 11) if o.eval_employee_type == 'standard' else range(1, 18)"/>
+                                <t t-set="q_range" t-value="range(1, 11) if o.eval_employee_type == 'standard' else range(11, 26)"/>
                                 <t t-foreach="q_range" t-as="i">
                                     <tr>
                                         <td><t t-raw="criteria[i]"/></td>
