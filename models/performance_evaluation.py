@@ -1,5 +1,6 @@
 from odoo import models, api, fields
 import logging
+from . import ethiopian_calendar
 
 _logger = logging.getLogger(__name__)
 
@@ -52,8 +53,8 @@ class EmpEvaluation(models.Model):
         readonly=True
     )
 
-    start_date = fields.Date(string="Period Start")
-    end_date = fields.Date(string="Period End")
+    start_date = fields.Date(string="Period Start",defualt=fields.Date.today())
+    end_date = fields.Date(string="Period End",defualt=fields.Date.today())
     evaluation_date = fields.Date(string='Evaluation Date')
 
     employee_comment = fields.Text(string="Employee’s Remarks")
@@ -63,7 +64,7 @@ class EmpEvaluation(models.Model):
         related='employee_id.emp_eval_type',
         selection=[
             ('supervisor', 'Supervisor'),
-            ('standard', 'Standard Employee'),
+            ('standard', 'Employee'),
         ],
         string='Employee Type',
         store=True,
@@ -273,6 +274,15 @@ class EmpEvaluation(models.Model):
         # Use direct relation to user_id to be more robust.
         # This matches the Record Rule logic and avoids issues if the current user's employee record isn't easily found or linked two-way.
         return ['|', ('coach_id.user_id', '=', user.id), ('parent_id.user_id', '=', user.id)]
+
+    def get_ethiopian_date_str(self, date_value):
+        """
+        Convert a Gregorian date to Ethiopian calendar format.
+        
+        :param date_value: Date field value (date object or False)
+        :return: Formatted Ethiopian date string (e.g., "15 መስከረም 2016")
+        """
+        return ethiopian_calendar.format_ethiopian_date(date_value)
 
     @api.model
     def cron_notify_missing_evaluations(self):

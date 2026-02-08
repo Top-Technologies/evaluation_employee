@@ -7,8 +7,8 @@ class HREmployeeBase(models.AbstractModel):
     
     emp_eval_type = fields.Selection([
         ('supervisor', 'Supervisor'),
-        ('standard', 'Standard Employee'),
-    ], string="Employee Type", default='standard', tracking=True)
+        ('standard', 'Employee'),
+    ], string="Employee Type", default='standard', tracking=True, required=True,)
 
 class HREmployee(models.Model):
     _inherit = 'hr.employee'

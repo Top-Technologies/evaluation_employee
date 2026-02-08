@@ -1,4 +1,3 @@
-
 {
     'name': 'Evaluation',
     'version': '18.0.1.0.0',
@@ -20,8 +19,12 @@
         'web.assets_backend': [
             'evaluation_employee/static/src/css/radio_style.css',
             'evaluation_employee/static/src/js/dynamic_menu.js',
+            'evaluation_employee/static/src/js/ethiopian_date.min.js',
+            'evaluation_employee/static/src/js/ethiopian_date_widget.js',
+            'evaluation_employee/static/src/xml/ethiopian_date_field.xml',
         ],
     },
+    'post_init_hook': 'assign_user_groups',
     'application': True,
     'installable': True,
     'license': 'LGPL-3',

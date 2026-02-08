@@ -9,8 +9,8 @@
                 <field name="employee_id" string="Employee Name"/>
                 <field name="department_id" string="Department"/>
                 <field name="job_id" string="Job Title"/>
-                <field name="start_date" string="Start Date"/>
-                <field name="end_date" string="End Date"/>
+                <field name="start_date" string="Start Date" widget="ethiopian_date"/>
+                <field name="end_date" string="End Date" widget="ethiopian_date"/>
                 <field name="total_score" string="Total Score"/>
                 <field name="state" string="Status"/>
              </list>
@@ -54,8 +54,8 @@
                             <!-- Dropdown strictly filtered by Python domain and Record Rules -->
                             <field name="employee_id" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}"/>
                             <field name="job_id" readonly="1"/>
-                            <field name="start_date" readonly="state != 'draft'"/>
-                            <field name="end_date" readonly="state != 'draft'"/>
+                            <field name="start_date" readonly="state != 'draft'" widget="ethiopian_date"/>
+                            <field name="end_date" readonly="state != 'draft'" widget="ethiopian_date"/>
                         </group>
                         <group>
                             <field name="department_id" readonly="1"/>

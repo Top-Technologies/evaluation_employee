@@ -77,9 +77,9 @@
                             </div>
                             <div class="col-6">
                                 <strong>Period:</strong>
-                                <span t-field="o.start_date"/>
+                                <span t-esc="o.get_ethiopian_date_str(o.start_date)"/>
                                 -
-                                <span t-field="o.end_date"/>
+                                <span t-esc="o.get_ethiopian_date_str(o.end_date)"/>
                             </div>
                         </div>
 
