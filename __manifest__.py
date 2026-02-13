@@ -24,7 +24,6 @@
             'evaluation_employee/static/src/xml/ethiopian_date_field.xml',
         ],
     },
-    'post_init_hook': 'assign_user_groups',
     'application': True,
     'installable': True,
     'license': 'LGPL-3',
