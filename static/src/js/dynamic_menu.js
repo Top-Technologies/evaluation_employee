@@ -11,7 +11,7 @@ browser.setInterval(() => {
     const menuXmlId = "evaluation_employee.evaluation_model_menu_action";
 
     // 🔴 SET YOUR FIRST EVALUATION START DATE HERE (ONCE)
-    const cycleStartDate = new Date(2026, 0, 28); // Jan 1, 2025
+   const cycleStartDate = new Date(2025, 10, 10); // Nov 10, 2025
 
     const now = new Date();
 
