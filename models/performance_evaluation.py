@@ -154,7 +154,7 @@ class EmpEvaluation(models.Model):
         """Block submission/approval if period is expired."""
         today = fields.Date.today()
         for rec in self:
-            if rec.state != 'draft' and rec.end_date and rec.end_date < today:
+            if rec.state != 'draft' and rec.end_date and rec.end_date > today:
                 raise models.ValidationError("Cannot process evaluations for an expired period.")
 
     @api.constrains('employee_id', 'coach_id')
