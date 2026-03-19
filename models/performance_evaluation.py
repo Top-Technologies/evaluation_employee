@@ -307,17 +307,7 @@ class EmpEvaluation(models.Model):
             
             if not evaluation_exists:
                 # Notify Coach
-                if emp.coach_id and emp.coach_id.user_id:
-                     # We can't use message_post on emp.evaluation since it doesn't exist.
-                     # We send an activity or email to the coach user.
-                     # Using activity on the employee record itself as a proxy or direct email.
-                     
-                     emp.activity_schedule(
-                         'mail.mail_activity_data_todo',
-                         user_id=emp.coach_id.user_id.id,
-                         note=f"Reminder: Please create an evaluation for {emp.name} for the current period."
-                     )
-                     _logger.info("Evaluation reminder activity created for coach %s regarding %s", emp.coach_id.name, emp.name)
+               pass
         return True
 
 
