@@ -12,7 +12,7 @@
         'views/hr_employee_inherit.xml',
         'views/evaluation_menu.xml',
         'data/email_templates.xml',
-        'data/cron.xml',
+        #'data/cron.xml',
         'reports/report_evaluation.xml',
     ],
     'assets': {
