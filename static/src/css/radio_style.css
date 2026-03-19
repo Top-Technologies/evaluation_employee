@@ -1,13 +1,26 @@
-/* Make radio buttons align horizontally with even spacing */
+/* Make radio buttons align properly */
 .o_horizontal_radio .o_radio_item {
     display: inline-flex !important;
+    flex-direction: row-reverse;
     align-items: center !important;
     justify-content: center;
-    width: 130px;              /* adjust width per column */
-    margin: 4px 8px !important;
+    width: 100px;             
+    margin: 4px 6px !important;
+    gap: 6px;                  
 }
 
-/* Center the entire group within the table cell */
+/* Remove wrong spacing */
+.o_horizontal_radio .o_radio_item input[type="radio"] {
+    transform: scale(1.2);
+    margin: 0;                 
+}
+
+/* Optional: clean text spacing */
+.o_horizontal_radio .o_radio_item span {
+    white-space: nowrap;       
+}
+
+/* Center group */
 .radio-row {
     text-align: center;
 }
