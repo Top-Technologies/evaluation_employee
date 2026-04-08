@@ -1,4 +1,5 @@
 from odoo import models, api, fields
+from odoo.exceptions import ValidationError, AccessError
 import logging
 from . import ethiopian_calendar
 
@@ -53,8 +54,8 @@ class EmpEvaluation(models.Model):
         readonly=True
     )
 
-    start_date = fields.Date(string="Period Start",defualt=fields.Date.today())
-    end_date = fields.Date(string="Period End",defualt=fields.Date.today())
+    start_date = fields.Date(string="Period Start", default=fields.Date.today)
+    end_date = fields.Date(string="Period End", default=fields.Date.today)
     evaluation_date = fields.Date(string='Evaluation Date')
 
     employee_comment = fields.Text(string="Employee’s Remarks")
@@ -147,42 +148,17 @@ class EmpEvaluation(models.Model):
                 ('end_date', '>=', rec.start_date),
             ]
             if self.search_count(domain) > 0:
-                raise models.ValidationError("An evaluation already exists for this employee within the specified period.")
+                raise ValidationError("An evaluation already exists for this employee within the specified period.")
 
     @api.constrains('start_date', 'end_date', 'state')
     def _check_late_evaluation(self):
         """Block submission/approval if period is expired."""
         today = fields.Date.today()
         for rec in self:
-            if rec.state != 'draft' and rec.end_date and rec.end_date > today:
-                raise models.ValidationError("Cannot process evaluations for an expired period.")
+            if rec.state != 'draft' and rec.end_date and rec.end_date < today:
+                raise ValidationError("Cannot process evaluations for an expired period.")
 
-    @api.constrains('employee_id', 'coach_id')
-    def _check_coach_authority(self):
-        """Ensure Coach can only evaluate their own employees."""
-        for rec in self:
-            current_user = self.env.user
-            
-            # If state is 'waiting_hr_approval' or 'done', we assume this is an Admin/HR action (Approval/Finalizing)
-            # checks for 'Evaluation' creation/filling should be done in early stages.
-            if rec.state in ['waiting_hr_approval', 'done']:
-                continue
-                
-            # If user is HR, they can see all, but they should not be filling out evaluations 
-            # for employees they don't coach (unless they are acting as coach).
-            # "HR cannot bypass coach rules" -> Enforcement at creation/draft level.
-            
-            # If I am not the coach AND not the manager, I shouldn't be here in draft/reviewed.
-            if rec.employee_id.coach_id.user_id != current_user and rec.employee_id.parent_id.user_id != current_user:
-                # One exception: If I am an HR Manager, do I *need* to edit someone else's draft?
-                # "Do NOT allow HR to evaluate random employees".
-                # So we strictly forbid it.
-                if current_user.has_group('evaluation_employee.group_evaluation_hr'):
-                     # Extra safety: If HR is fixing a stuck record?
-                     # We'll stick to the requirement "HR cannot bypass coach rules" logic for *Evaluation*.
-                     pass
-                
-                raise models.ValidationError("You can only evaluate employees you are coaching or managing.")
+
 
     # -------------------------------------------------------
     # ACTIONS (State Machine)
@@ -191,9 +167,15 @@ class EmpEvaluation(models.Model):
         """Coach submits evaluation to employee."""
         self.ensure_one()
         if self.state != 'draft':
-            raise models.ValidationError("Transitions is only allowed from Draft.")
+            raise ValidationError("Transition is only allowed from Draft.")
         if not self.env.user.has_group('evaluation_employee.group_evaluation_coach'):
-            raise models.AccessError("Only Coaches can submit evaluations for review.")
+            raise AccessError("Only Coaches can submit evaluations for review.")
+        # Verify current user is coach or manager of the employee
+        current_user = self.env.user
+        if (self.employee_id.coach_id.user_id != current_user and
+                self.employee_id.parent_id.user_id != current_user and
+                not current_user.has_group('evaluation_employee.group_evaluation_hr')):
+            raise AccessError("You can only evaluate employees you are coaching or managing.")
         
         self.state = 'reviewed_by_coach'
         
@@ -212,11 +194,11 @@ class EmpEvaluation(models.Model):
         """Employee submits feedback to HR."""
         self.ensure_one()
         if self.state != 'reviewed_by_coach':
-            raise models.ValidationError("Transitions is only allowed from Reviewed by Coach.")
+            raise ValidationError("Transition is only allowed from Reviewed by Coach.")
         if not self.is_self:
-            raise models.AccessError("Only the evaluated employee can submit their feedback.")
+            raise AccessError("Only the evaluated employee can submit their feedback.")
         if not self.employee_comment:
-            raise models.ValidationError("Please provide your remarks before submitting.")
+            raise ValidationError("Please provide your remarks before submitting.")
         
         self.state = 'waiting_hr_approval'
         
@@ -237,9 +219,9 @@ class EmpEvaluation(models.Model):
         """HR Manager approves evaluation."""
         self.ensure_one()
         if self.state != 'waiting_hr_approval':
-            raise models.ValidationError("Transitions is only allowed from Waiting HR Approval.")
+            raise ValidationError("Transition is only allowed from Waiting HR Approval.")
         if not self.env.user.has_group('evaluation_employee.group_evaluation_hr'):
-            raise models.AccessError("Only HR Managers can approve evaluations.")
+            raise AccessError("Only HR Managers can approve evaluations.")
         
         self.state = 'done'
         self.evaluation_date = fields.Date.today()
