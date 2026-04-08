@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- The Widget Template (used by the field component) -->
+    <t t-name="evaluation_employee.EthiopianDateWidget" owl="1">
+        <div class="o_ethiopian_date_widget d-flex align-items-center position-relative">
+            <input type="text" class="o_input" t-ref="input" t-on-change="onChange" t-on-click="togglePicker" placeholder="DD MM YYYY"/>
+            <button class="btn btn-secondary fa fa-calendar ml-1" t-on-click="togglePicker" tabindex="-1"></button>
+            
+            <div t-if="state.showPicker" class="o_eth_picker_popover position-absolute bg-white border p-2 shadow" style="top: 100%; left: 0; z-index: 1000; width: 250px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <button class="btn btn-sm btn-light" t-on-click="() => this.changeYear(-1)">&lt;&lt;</button>
+                    <button class="btn btn-sm btn-light" t-on-click="() => this.changeMonth(-1)">&lt;</button>
+                    <span class="font-weight-bold">
+                        <t t-esc="amharicMonths[state.viewMonth - 1]"/> <t t-esc="state.viewYear"/>
+                    </span>
+                    <button class="btn btn-sm btn-light" t-on-click="() => this.changeMonth(1)">&gt;</button>
+                    <button class="btn btn-sm btn-light" t-on-click="() => this.changeYear(1)">&gt;&gt;</button>
+                </div>
+                
+                <table class="table table-sm table-borderless text-center mb-0">
+                    <thead>
+                        <tr>
+                            <t t-foreach="weekDays" t-as="day" t-key="day_index">
+                                <th class="p-0"><small t-esc="day"/></th>
+                            </t>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="calendarRows" t-as="row" t-key="row_index">
+                            <t t-foreach="row" t-as="day" t-key="day_index">
+                                <td class="p-0">
+                                    <button t-if="day" class="btn btn-sm btn-block" 
+                                        t-att-class="day === props.value ? 'btn-primary' : 'btn-light'"
+                                        t-on-click="() => this.selectDate(day)">
+                                        <t t-esc="day"/>
+                                    </button>
+                                </td>
+                            </t>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+
+    <!-- The Field Component Template -->
+    <t t-name="evaluation_employee.EthiopianDateField">
+        <div class="o_field_date o_field_widget o_input_dropdown" t-ref="root">
+            <input type="text"
+                   class="o_input"
+                   t-ref="input"
+                   t-att-value="formattedValue"
+                   t-on-click="onInputClick"
+                   readonly="1"
+                   placeholder="DD/MM/YYYY"/>
+            <span class="o_input_dropdown_toggler">
+                <i class="fa fa-calendar" t-on-click="onInputClick"></i>
+            </span>
+        </div>
+    </t>
+
+    <!-- The Picker Component Template -->
+    <t t-name="evaluation_employee.EthiopianDatePicker">
+        <div class="o_datetime_picker p-3">
+             <!-- Calendar Label -->
+             <div class="text-center text-muted fw-bold mb-2" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">
+                 Ethiopian Calendar
+             </div>
+             
+             <!-- Header -->
+             <div class="d-flex justify-content-between align-items-center mb-2">
+                 <button class="btn btn-sm btn-secondary" t-on-click="prevMonth">
+                     <i class="fa fa-chevron-left"/>
+                 </button>
+                 <span class="fw-bold fs-5">
+                     <t t-esc="monthName"/> <t t-esc="state.viewYear"/>
+                 </span>
+                 <button class="btn btn-sm btn-secondary" t-on-click="nextMonth">
+                     <i class="fa fa-chevron-right"/>
+                 </button>
+             </div>
+             
+             <!-- Weekdays -->
+             <div class="d-flex text-muted mb-2 text-center" style="font-size:0.8em;">
+                 <t t-foreach="weekdays" t-as="wday" t-key="wday_index">
+                     <div style="width:35px;"><t t-esc="wday"/></div>
+                 </t>
+             </div>
+             
+             <!-- Days Grid -->
+             <div class="d-flex flex-wrap" style="width: 245px;">
+                 <t t-foreach="days" t-as="day" t-key="day_index">
+                     <div class="d-flex align-items-center justify-content-center"
+                          style="width:35px; height:35px; cursor:pointer;"
+                          t-att-class="day.val ? 'hover-bg-200 rounded-circle' : ''"
+                          t-on-click="() => this.selectDate(day)">
+                         <span t-if="day.val" t-esc="day.val"/>
+                     </div>
+                 </t>
+             </div>
+        </div>
+    </t>
+
+</templates>

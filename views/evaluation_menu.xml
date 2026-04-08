@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="evaluation_model_action" model="ir.actions.act_window">
+        <field name="name">Evaluation Of Employee</field>
+        <field name="res_model">emp.evaluation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="evaluation_model_menu_action"
+          name="Evaluation Of Employee"
+          parent="hr_appraisal.menu_hr_appraisal_root"
+          action="evaluation_model_action"/>
+
+</odoo>
