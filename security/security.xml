@@ -31,9 +31,7 @@
             <field name="implied_ids" eval="[(4, ref('group_evaluation_coach'))]"/>
         </record>
 
-        <record id="base.group_user" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('group_evaluation_employee'))]"/>
-        </record>
+
 
 
         <!-- Record Rules -->
@@ -63,23 +61,7 @@
             <field name="groups" eval="[(4, ref('group_evaluation_hr'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>
         </record>
-
-        <!-- HR Employee Selection Rule: Coach sees only their subordinates -->
-        <record id="rule_hr_employee_evaluation_coach" model="ir.rule">
-            <field name="name">Coach: Subordinates Visibility</field>
-            <field name="model_id" ref="hr.model_hr_employee"/>
-            <field name="groups" eval="[(4, ref('group_evaluation_coach'))]"/>
-            <field name="domain_force">['|', '|', ('user_id', '=', user.id), ('coach_id.user_id', '=', user.id),
-                ('parent_id.user_id', '=', user.id)]
-            </field>
-        </record>
-
-        <record id="rule_hr_employee_evaluation_hr" model="ir.rule">
-            <field name="name">HR: Global Employee Visibility</field>
-            <field name="model_id" ref="hr.model_hr_employee"/>
-            <field name="groups" eval="[(4, ref('group_evaluation_hr'))]"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-        </record>
+        
 
     </data>
 </odoo>
