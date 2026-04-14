@@ -135,28 +135,21 @@ class EmpEvaluation(models.Model):
     # -------------------------------------------------------
     # CONSTRAINTS
     # -------------------------------------------------------
-    @api.constrains('employee_id', 'start_date', 'end_date')
-    def _check_unique_evaluation(self):
-        """Ensure only one evaluation per employee per period."""
-        for rec in self:
-            if not rec.employee_id or not rec.start_date or not rec.end_date:
-                continue
-            domain = [
-                ('id', '!=', rec.id),
-                ('employee_id', '=', rec.employee_id.id),
-                ('start_date', '<=', rec.end_date),
-                ('end_date', '>=', rec.start_date),
-            ]
-            if self.search_count(domain) > 0:
-                raise ValidationError("An evaluation already exists for this employee within the specified period.")
-
-    @api.constrains('start_date', 'end_date', 'state')
-    def _check_late_evaluation(self):
-        """Block submission/approval if period is expired."""
+    def _validate_evaluation_submission(self):
+        """Validate evaluation dates and unique period constraint before processing."""
         today = fields.Date.today()
         for rec in self:
-            if rec.state != 'draft' and rec.end_date and rec.end_date < today:
+            if rec.end_date and rec.end_date > today:
                 raise ValidationError("Cannot process evaluations for an expired period.")
+            if rec.employee_id and rec.start_date and rec.end_date:
+                domain = [
+                    ('id', '!=', rec.id),
+                    ('employee_id', '=', rec.employee_id.id),
+                    ('start_date', '<=', rec.end_date),
+                    ('end_date', '>=', rec.start_date),
+                ]
+                if self.search_count(domain) > 0:
+                    raise ValidationError("An evaluation already exists for this employee within the specified period.")
 
 
 
@@ -177,6 +170,7 @@ class EmpEvaluation(models.Model):
                 not current_user.has_group('evaluation_employee.group_evaluation_hr')):
             raise AccessError("You can only evaluate employees you are coaching or managing.")
         
+        self._validate_evaluation_submission()
         self.state = 'reviewed_by_coach'
         
         # Notify Employee
@@ -200,6 +194,7 @@ class EmpEvaluation(models.Model):
         if not self.employee_comment:
             raise ValidationError("Please provide your remarks before submitting.")
         
+        self._validate_evaluation_submission()
         self.state = 'waiting_hr_approval'
         
         # Notify HR Managers
@@ -223,6 +218,7 @@ class EmpEvaluation(models.Model):
         if not self.env.user.has_group('evaluation_employee.group_evaluation_hr'):
             raise AccessError("Only HR Managers can approve evaluations.")
         
+        self._validate_evaluation_submission()
         self.state = 'done'
         self.evaluation_date = fields.Date.today()
         
@@ -250,12 +246,17 @@ class EmpEvaluation(models.Model):
     # DOMAIN & UTILS
     # -------------------------------------------------------
     def _get_employee_domain(self):
-        """Strict filtering: Coach sees ONLY their subordinates."""
         user = self.env.user
-        
-        # Use direct relation to user_id to be more robust.
-        # This matches the Record Rule logic and avoids issues if the current user's employee record isn't easily found or linked two-way.
-        return ['|', ('coach_id.user_id', '=', user.id), ('parent_id.user_id', '=', user.id)]
+
+        # HR can see all employees
+        if user.has_group('evaluation_employee.group_evaluation_hr'):
+            return []
+
+        # Coach + Employee restriction
+        return ['|',
+                ('coach_id.user_id', '=', user.id),
+                ('parent_id.user_id', '=', user.id)
+                ]
 
     def get_ethiopian_date_str(self, date_value):
         """
