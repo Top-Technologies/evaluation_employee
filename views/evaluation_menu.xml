@@ -1,15 +1,70 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <record id="evaluation_model_action" model="ir.actions.act_window">
-        <field name="name">Evaluation Of Employee</field>
+    <!-- Actions -->
+    <record id="action_evaluation_three_month" model="ir.actions.act_window">
+        <field name="name">3 Month Evaluation</field>
         <field name="res_model">emp.evaluation</field>
         <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
 
-    <menuitem id="evaluation_model_menu_action"
-          name="Evaluation Of Employee"
-          parent="hr_appraisal.menu_hr_appraisal_root"
-          action="evaluation_model_action"/>
+    <record id="action_evaluation_sixty_days" model="ir.actions.act_window">
+        <field name="name">60 Days Evaluation</field>
+        <field name="res_model">emp.evaluation.sixty</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
 
+    <record id="action_evaluation_ninety_days" model="ir.actions.act_window">
+        <field name="name">90 Days Evaluation</field>
+        <field name="res_model">emp.evaluation.ninety</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_evaluation_hr" model="ir.actions.act_window">
+        <field name="name">HR Evaluation</field>
+        <field name="res_model">emp.evaluation.hr</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Parent Menu -->
+    <menuitem id="menu_employee_evaluation_root"
+              name="Employee Evaluation"
+              parent="hr_appraisal.menu_hr_appraisal_root"
+              sequence="10"/>
+
+    <!-- Submenus -->
+    <menuitem id="evaluation_model_menu_action"
+              name="3 Month Evaluation"
+              parent="menu_employee_evaluation_root"
+              action="action_evaluation_three_month"
+              groups="evaluation_employee.group_evaluation_employee"
+              sequence="1"/>
+
+    <menuitem id="menu_evaluation_sixty_days"
+              name="60 Days Evaluation"
+              parent="menu_employee_evaluation_root"
+              action="action_evaluation_sixty_days"
+              groups="evaluation_employee.group_evaluation_employee"
+              sequence="2"/>
+
+    <menuitem id="menu_evaluation_ninety_days"
+              name="90 Days Evaluation"
+              parent="menu_employee_evaluation_root"
+              action="action_evaluation_ninety_days"
+              groups="evaluation_employee.group_evaluation_employee"
+              sequence="3"/>
+
+    <menuitem id="menu_evaluation_hr"
+              name="HR Evaluation"
+              parent="menu_employee_evaluation_root"
+              action="action_evaluation_hr"
+              groups="evaluation_employee.group_evaluation_hr"
+              sequence="4"/>
 </odoo>

@@ -2,6 +2,15 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_emp_evaluation_employee,emp.evaluation employee,model_emp_evaluation,group_evaluation_employee,1,1,0,0
 access_emp_evaluation_coach,emp.evaluation coach,model_emp_evaluation,group_evaluation_coach,1,1,1,0
 access_emp_evaluation_hr,emp.evaluation hr,model_emp_evaluation,group_evaluation_hr,1,1,1,1
+access_emp_evaluation_sixty_employee,emp.evaluation.sixty employee,model_emp_evaluation_sixty,group_evaluation_employee,1,1,0,0
+access_emp_evaluation_sixty_coach,emp.evaluation.sixty coach,model_emp_evaluation_sixty,group_evaluation_coach,1,1,1,0
+access_emp_evaluation_sixty_hr,emp.evaluation.sixty hr,model_emp_evaluation_sixty,group_evaluation_hr,1,1,1,1
+access_emp_evaluation_ninety_employee,emp.evaluation.ninety employee,model_emp_evaluation_ninety,group_evaluation_employee,1,1,0,0
+access_emp_evaluation_ninety_coach,emp.evaluation.ninety coach,model_emp_evaluation_ninety,group_evaluation_coach,1,1,1,0
+access_emp_evaluation_ninety_hr,emp.evaluation.ninety hr,model_emp_evaluation_ninety,group_evaluation_hr,1,1,1,1
+access_emp_evaluation_hr_employee,emp.evaluation.hr employee,model_emp_evaluation_hr,group_evaluation_employee,1,1,0,0
+access_emp_evaluation_hr_coach,emp.evaluation.hr coach,model_emp_evaluation_hr,group_evaluation_coach,1,1,1,0
+access_emp_evaluation_hr_hr,emp.evaluation.hr hr,model_emp_evaluation_hr,group_evaluation_hr,1,1,1,1
 access_hr_employee_public,hr.employee public,hr.model_hr_employee,base.group_user,1,0,0,0
 access_hr_job_public,hr.job public,hr.model_hr_job,base.group_user,1,0,0,0
 access_hr_department_public,hr.department public,hr.model_hr_department,base.group_user,1,0,0,0

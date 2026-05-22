@@ -1,58 +1,82 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- ================= TREE VIEW ================= -->
+
+    <!-- ==================== COMMON STYLE DEFINITIONS ==================== -->
+    <record id="view_evaluation_assets" model="ir.ui.view">
+        <field name="name">evaluation.assets</field>
+        <field name="model">emp.evaluation</field>
+        <field name="arch" type="xml">
+            <form string="Dummy">
+                <style>
+                    /* Custom Radio Styling and Table Alignment */
+                    .radio-row {
+                        text-align: center;
+                        vertical-align: middle !important;
+                    }
+                    .o_horizontal_radio .o_radio_item {
+                        display: inline-block;
+                        margin-right: 15px;
+                        font-weight: bold;
+                    }
+                    .o_horizontal_radio .o_radio_input {
+                        margin-right: 4px;
+                        transform: scale(1.15);
+                    }
+                </style>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== 3 MONTH EVALUATION VIEWS ==================== -->
     <record id="view_emp_evaluation_tree" model="ir.ui.view">
         <field name="name">emp.evaluation.tree</field>
         <field name="model">emp.evaluation</field>
         <field name="arch" type="xml">
-            <list string="Employee Evaluations">
-                <field name="employee_id" string="Employee Name"/>
-                <field name="department_id" string="Department"/>
-                <field name="job_id" string="Job Title"/>
-                <field name="start_date" string="Start Date" widget="ethiopian_date"/>
-                <field name="end_date" string="End Date" widget="ethiopian_date"/>
-                <field name="total_score" string="Total Score"/>
-                <field name="state" string="Status"/>
-             </list>
-         </field>
-     </record>
+            <list string="3 Month Evaluations" decoration-info="state == 'draft'" decoration-warning="state == 'reviewed_by_coach'" decoration-success="state == 'done'">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="start_date" widget="ethiopian_date"/>
+                <field name="end_date" widget="ethiopian_date"/>
+                <field name="total_score"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
 
-
-
-    <record id="view_emp_evaluation_form_styled" model="ir.ui.view">
-        <field name="name">emp.evaluation.form.styled</field>
+    <record id="view_emp_evaluation_form" model="ir.ui.view">
+        <field name="name">emp.evaluation.form</field>
         <field name="model">emp.evaluation</field>
         <field name="arch" type="xml">
-            <form string="Employee Evaluation">
+            <form string="3 Month Evaluation">
                 <sheet>
                     <field name="is_self" invisible="1"/>
                     <field name="eval_employee_type" invisible="1"/>
+                    <field name="allowed_employee_ids" invisible="1"/>
                     
                     <header>
                         <button name="action_submit_to_employee" string="Submit to Employee" type="object" class="oe_highlight"
                                 invisible="state != 'draft'"
                                 groups="evaluation_employee.group_evaluation_coach"/>
                         
-                        <button name="action_submit_feedback" string="Submit Feedback" type="object" class="oe_highlight"
-                                invisible="state != 'reviewed_by_coach'"
+                        <button name="action_submit_feedback" string="Submit Remarks" type="object" class="btn-primary"
+                                invisible="state != 'reviewed_by_coach' or not is_self"
                                 groups="evaluation_employee.group_evaluation_employee"/>
                                 
                         <button name="action_confirm" string="Approve Evaluation" type="object" class="oe_highlight"
-                                invisible="state != 'waiting_hr_approval'"
+                                invisible="state == 'done'"
                                 groups="evaluation_employee.group_evaluation_hr"/>
                                 
                         <button name="action_preview" string="Print Results" type="object"
                                 invisible="state != 'done'"
                                 groups="evaluation_employee.group_evaluation_hr"/>
-                                
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,reviewed_by_coach,waiting_hr_approval,done"/>
                     </header>
 
-
                     <group string="Basic Info" colspan="2">
                         <group>
-                            <!-- Dropdown strictly filtered by Python domain and Record Rules -->
-                            <field name="employee_id" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="employee_id" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}" domain="['|', ('coach_id.user_id', '=', uid), ('parent_id.user_id', '=', uid)]"/>
                             <field name="job_id" readonly="1"/>
                             <field name="start_date" readonly="state != 'draft'" widget="ethiopian_date"/>
                             <field name="end_date" readonly="state != 'draft'" widget="ethiopian_date"/>
@@ -61,18 +85,18 @@
                             <field name="department_id" readonly="1"/>
                             <field name="manager_id" readonly="1"/>
                             <field name="coach_id" readonly="1"/>
-                            <field name="eval_employee_type" readonly="1"/>
+                            <field name="evaluation_date" readonly="1"/>
                         </group>
                     </group>
 
                     <notebook>
-                        <page string="Primary Evaluation" invisible="eval_employee_type != 'standard'">
-                            <div style="padding:10px;">
-                                <h3 style="font-weight:600; color:#3d003d;">Primary Evaluation</h3>
+                        <page string="3 Month Evaluation" invisible="eval_employee_type != 'standard'">
+                            <div style="padding:15px;">
+                                <h3 style="font-weight:600; color:#3d003d;">Standard Employee Evaluation Form</h3>
                                 <table style="width:100%; border-collapse:collapse; border-radius:8px; overflow:hidden;">
                                     <thead style="background-color:#6b405e; color:white;">
                                         <tr>
-                                            <th style="width:35%; text-align:left; padding:12px;">Evaluation Criteria</th>
+                                            <th style="width:30%; text-align:left; padding:12px;">Evaluation Criteria</th>
                                             <th style="width:10%;">5= Exceptional<br/>ልዩ</th>
                                             <th style="width:10%;">4= Highly Effective<br/>ከፍተኛ ውጤታማ</th>
                                             <th style="width:10%;">3= Proficient<br/>ብቃት ያለው</th>
@@ -144,10 +168,15 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <separator string="Comments &amp; Remarks" />
                                 <group>
-                                    <field name="total_score" readonly="1"/>
                                     <field name="manager_comment" placeholder="Manager’s feedback..." readonly="state != 'draft'"/>
                                     <field name="employee_comment" placeholder="Employee's remarks..." readonly="state != 'reviewed_by_coach' or not is_self"/>
+                                </group>
+                                <group>
+                                    <div class="oe_right oe_button_box" style="font-size:1.4em; font-weight:bold; margin-top:20px;">
+                                        Total Score: <field name="total_score" readonly="1" class="oe_inline"/>
+                                    </div>
                                 </group>
                             </div>
                         </page>
@@ -169,112 +198,526 @@
                                     </thead>
                                     <tbody>
                                         <tr style="background-color:#f7f3f5;">
-                                            <td>1.Skill and proficiency in carrying out assignments in real time manner<br/>የተሰጡትን ስራዎች በተሰጠው ግዜ ለማከናወን ችሎታ እና ብቃት አለው</td>
+                                            <td>1. Skill and proficiency in carrying out assignments in real time manner<br/>የተሰጡትን ስራዎች በተሰጠው ግዜ ለማከናወን ችሎታ እና ብቃት አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q11" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                        <tr style="background-color:#f7f3f5;">
-                                            <td>2.Possesses skills and knowledge to perform the job competently<br/>ስራውን በብቃት ለማከናወን ችሎታ እና እውቀት አለው።</td>
+                                        <tr>
+                                            <td>2. Possesses skills and knowledge to perform the job competently<br/>ስራውን በብቃት ለማከናወን ችሎታ እና እውቀት አለው።</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q12" widget="radio" nolabel="1" class="o_horizontal_radio" invisible="eval_employee_type != 'supervisor'" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>3.	Skill at planning, organizing and prioritizing workload<br/>የሥራ ጫናን በማቀድ, በማደራጀት እና ቅድሚያ የመስጠት ችሎታ አለው</td>
+                                        <tr style="background-color:#f7f3f5;">
+                                            <td>3. Skill at planning, organizing and prioritizing workload<br/>የሥራ ጫናን በማቀድ, በማደራጀት እና ቅድሚያ የመስጠት ችሎታ አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q13" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                        <tr style="background-color:#f7f3f5;">
-                                            <td>4.Holds self accountable for assigned responsibilities; sees tasks through to completion in a timely manner<br/> ለተሰጡት ኃላፊነቶች እራስን ተጠያቂ ያደርጋል; ሥራዎችን በጊዜው እስከ ማጠናቀቅያ ድረስ ይመለከታል</td>
+                                        <tr>
+                                            <td>4. Holds self accountable for assigned responsibilities; sees tasks through to completion in a timely manner<br/> ለተሰጡት ኃላፊነቶች እራስን ተጠያቂ ያደርጋል; ሥራዎችን በጊዜው እስከ ማጠናቀቅያ ድረስ ይመለከታል</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q14" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>5.Proficiency at improving work methods and procedures as a means toward greater efficiency<br/>ለበለጠ ውጤታማነት የስራ ዘዴዎችን እና ሂደቶችን የማሻሻል ብቃት አለው</td>
+                                        <tr style="background-color:#f7f3f5;">
+                                            <td>5. Proficiency at improving work methods and procedures as a means toward greater efficiency<br/>ለበለጠ ውጤታማነት የስራ ዘዴዎችን እና ሂደቶችን የማሻሻል ብቃት አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q15" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                        <tr style="background-color:#f7f3f5;">
-                                            <td>6.Communicates effectively with supervisor, peers, and customers<br/>ከሱፐርቫይዘሮች፣ እኩዮች እና ደንበኞች ጋር በብቃት ይግባባል</td>
+                                        <tr>
+                                            <td>6. Communicates effectively with supervisor, peers, and customers<br/>ከሱፐርቫይዘሮች፣ እኩዮች እና ደንበኞች ጋር በብቃት ይግባባል</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q16" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>7.Ability to work independently<br/>እራሱን ችሎ የመስራት ብቃት አለው</td>
+                                        <tr style="background-color:#f7f3f5;">
+                                            <td>7. Ability to work independently<br/>እራሱን ችሎ የመስራት ብቃት አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q17" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>8.Ability to work cooperatively with supervision or as part of a team<br/>ከክትትል ወይም ከቡድን አካል ጋር በትብብር የመስራት ችሎታ አለው</td>
+                                            <td>8. Ability to work cooperatively with supervision or as part of a team<br/>ከክትትል ወይም ከቡድን አካል ጋር በትብብር የመስራት ችሎታ አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q18" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>9.Willingness to take on additional responsibilities<br/>ተጨማሪ ኃላፊነቶችን ለመውሰድ ፈቃደኛነት አለው</td>
+                                        <tr style="background-color:#f7f3f5;">
+                                            <td>9. Willingness to take on additional responsibilities<br/>ተጨማሪ ኃላፊነቶችን ለመውሰድ ፈቃደኛነት አለው</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q19" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>10.Reliability (attendance, punctuality, meeting deadlines)<br/>አስተማማኝነት (በመገኘት፣ የስራ ሰዓቱን በማክበር፣ የስብሰባ ቀነ-ገደቦች በመጠበቅ)</td>
+                                            <td>10. Reliability (attendance, punctuality, meeting deadlines)<br/>አስተማማኝነት (በመገኘት፣ የስራ ሰዓቱን በማክበር፣ የስብሰባ ቀነ-ገደቦች በመጠበቅ)</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q20" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                         <tr>
-                                            <td>11.Adeptness at analyzing facts, problem solving, decision-making, and demonstrating good judgment<br/>እውነታዎችን በመተንተን፣ ችግር በመፍታት፣ ውሳኔ በመስጠት እና ጥሩ የማመዛዘን ችሎታን በማሳየት</td>
+                                         <tr style="background-color:#f7f3f5;">
+                                            <td>11. Adeptness at analyzing facts, problem solving, decision-making, and demonstrating good judgment<br/>እውነታዎችን በመተንተን፣ ችግር በመፍታት፣ ውሳኔ በመስጠት እና ጥሩ የማመዛዘን ችሎታን በማሳየት</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q21" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                          <tr>
-                                            <td>12.Displays fairness towards all subordinates.<br/>ለሁሉም የበታች ሰራተኞች ፍትሃዊነትን ያሳያል።</td>
+                                            <td>12. Displays fairness towards all subordinates.<br/>ለሁሉም የበታች ሰራተኞች ፍትሃዊነትን ያሳያል።</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q22" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                         <tr>
-                                            <td>13.Identifies performance expectations, gives timely feedback and conducts formal<br/>ለአፈፃፀም የሚጠበቁትን ቁልፍ ነገሮች ይለያል, ወቅታዊ አስተያየት ይሰጣል እና የክፍሉን መደበኛ የስራ አፈጻጸም ግምገማዎችን በየግዜው ያካሂዳል.</td>
+                                         <tr style="background-color:#f7f3f5;">
+                                            <td>13. Identifies performance expectations, gives timely feedback and conducts formal performance evaluations.<br/>ለአፈፃፀም የሚጠበቁትን ቁልፍ ነገሮች ይለያል, ወቅታዊ አስተያየት ይሰጣል እና የክፍሉን መደበኛ የስራ አፈጻጸም ግምገማዎችን በየግዜው ያካሂዳል.</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q23" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                          <tr>
-                                            <td>14.Helps employees to see the potential for developing their skills; assists them in eliminating barriers to their development.<br/>ሰራተኞቹ ክህሎቶቻቸውን በማዳበር አቅማቸውን እንዲገነዘቡ ይረዳል; በእድገታቸው ላይ እንቅፋቶችን ለማስወገድ ይረዳቸዋል</td>
+                                            <td>14. Helps employees to see the potential for developing their skills; assists them in eliminating barriers to their development.<br/>ሰራተኞቹ ክህሎቶቻቸውን በማዳበር አቅማቸውን እንዲገነዘቡ ይረዳል; በእድገታቸው ላይ እንቅፋቶችን ለማስወገድ ይረዳቸዋል</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q24" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
-                                         <tr>
-                                            <td>15.Delegates responsibility where appropriate, based on the employee’s ability and potential.<br/>በተቀጣሪው አቅም እና ችሎታ ላይ በመመስረት ሃላፊነትን በተገቢው ቦታ ያስተላልፋል.</td>
+                                         <tr style="background-color:#f7f3f5;">
+                                            <td>15. Delegates responsibility where appropriate, based on the employee’s ability and potential.<br/>በተቀጣሪው አቅም እና ችሎታ ላይ በመመስረት ሃላፊነትን በተገቢው ቦታ ያስተላልፋል.</td>
                                             <td colspan="6" class="radio-row">
                                                 <field name="q25" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
+                                <separator string="Comments &amp; Remarks" />
                                 <group>
-                                    <field name="total_score" readonly="1"/>
                                     <field name="manager_comment" placeholder="Manager’s feedback..." readonly="state != 'draft'"/>
                                     <field name="employee_comment" placeholder="Employee's remarks..." readonly="state != 'reviewed_by_coach' or not is_self"/>
                                 </group>
+                                <group>
+                                    <div class="oe_right oe_button_box" style="font-size:1.4em; font-weight:bold; margin-top:20px;">
+                                        Total Score: <field name="total_score" readonly="1" class="oe_inline"/>
+                                    </div>
+                                </group>
                             </div>
                         </page>
+
                     </notebook>
                 </sheet>
-                <chatter>
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </chatter>
+                <chatter/>
             </form>
         </field>
     </record>
+
+    <!-- ==================== 60 DAYS EVALUATION VIEWS ==================== -->
+    <record id="view_emp_evaluation_sixty_tree" model="ir.ui.view">
+        <field name="name">emp.evaluation.sixty.tree</field>
+        <field name="model">emp.evaluation.sixty</field>
+        <field name="arch" type="xml">
+            <list string="60 Days Evaluations" decoration-info="state == 'draft'" decoration-warning="state == 'reviewed_by_coach'" decoration-success="state == 'done'">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="start_date" widget="ethiopian_date"/>
+                <field name="end_date" widget="ethiopian_date"/>
+                <field name="total_score"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_emp_evaluation_sixty_form" model="ir.ui.view">
+        <field name="name">emp.evaluation.sixty.form</field>
+        <field name="model">emp.evaluation.sixty</field>
+        <field name="arch" type="xml">
+            <form string="60 Days Evaluation">
+                <sheet>
+                    <field name="is_self" invisible="1"/>
+                    <field name="allowed_employee_ids" invisible="1"/>
+                    
+                    <header>
+                        <button name="action_submit_to_employee" string="Submit to Employee" type="object" class="oe_highlight"
+                                invisible="state != 'draft'"
+                                groups="evaluation_employee.group_evaluation_coach"/>
+                        
+                        <button name="action_submit_feedback" string="Submit Remarks" type="object" class="btn-primary"
+                                invisible="state != 'reviewed_by_coach' or not is_self"
+                                groups="evaluation_employee.group_evaluation_employee"/>
+                                
+                        <button name="action_confirm" string="Approve Evaluation" type="object" class="oe_highlight"
+                                invisible="state == 'done'"
+                                groups="evaluation_employee.group_evaluation_hr"/>
+                                
+                        <button name="action_preview" string="Print Results" type="object"
+                                invisible="state != 'done'"
+                                groups="evaluation_employee.group_evaluation_hr"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,reviewed_by_coach,waiting_hr_approval,done"/>
+                    </header>
+
+                    <group string="Basic Info" colspan="2">
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}" domain="['|', ('coach_id.user_id', '=', uid), ('parent_id.user_id', '=', uid)]"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="start_date" readonly="state != 'draft'" widget="ethiopian_date"/>
+                            <field name="end_date" readonly="state != 'draft'" widget="ethiopian_date"/>
+                        </group>
+                        <group>
+                            <field name="department_id" readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                            <field name="coach_id" readonly="1"/>
+                            <field name="evaluation_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="60 Days Evaluation">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr style="background-color:#eee; text-align:center;">
+                                        <th style="width: 50%;">Evaluation Criteria</th>
+                                        <th style="width: 8%;">Excellent (5)</th>
+                                        <th style="width: 8%;">V.Good (4)</th>
+                                        <th style="width: 8%;">Good (3)</th>
+                                        <th style="width: 8%;">Satisfactory (2)</th>
+                                        <th style="width: 8%;">Poor (1)</th>
+                                        <th style="width: 10%;">NA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>1. Job knowledge</strong><br/><span style="color:#888;">ስለስራው ያለው ዕውቀት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q1" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>2. Work quality</strong><br/><span style="color:#888;">የስራ ጥራት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q2" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>3. Innovative thinking</strong><br/><span style="color:#888;">የፈጠራ አስተሳሰብ</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q3" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>4. Attendance</strong><br/><span style="color:#888;">በስራ ሰዓት ማክበር</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q4" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>5. Productivity</strong><br/><span style="color:#888;">የስራ ምርታማነት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q5" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>6. Communication</strong><br/><span style="color:#888;">የስራ ግንኙነት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q6" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>7. Dependability</strong><br/><span style="color:#888;">ራስን ችሎ መስራት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q7" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>8. Problem solving</strong><br/><span style="color:#888;">ችግሮችን የመፍታት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q8" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>9. Responsibility</strong><br/><span style="color:#888;">ሃላፊነትን የመሸከም</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q9" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>10. Administration</strong><br/><span style="color:#888;">ስራዎችን በስዓቱ የማስተዳደር</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q10" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <separator string="Comments &amp; Remarks" />
+                            <group>
+                                <field name="manager_comment" placeholder="Immediate supervisor / Coach remarks..." readonly="state != 'draft'"/>
+                                <field name="employee_comment" placeholder="Employee's feedback or remarks..." readonly="state != 'reviewed_by_coach' or not is_self"/>
+                            </group>
+                            <group>
+                                <div class="oe_right oe_button_box" style="font-size:1.4em; font-weight:bold; margin-top:20px;">
+                                    Total Score: <field name="total_score" readonly="1" class="oe_inline"/>
+                                </div>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== 90 DAYS EVALUATION VIEWS ==================== -->
+    <record id="view_emp_evaluation_ninety_tree" model="ir.ui.view">
+        <field name="name">emp.evaluation.ninety.tree</field>
+        <field name="model">emp.evaluation.ninety</field>
+        <field name="arch" type="xml">
+            <list string="90 Days Evaluations" decoration-info="state == 'draft'" decoration-warning="state == 'reviewed_by_coach'" decoration-success="state == 'done'">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="start_date" widget="ethiopian_date"/>
+                <field name="end_date" widget="ethiopian_date"/>
+                <field name="total_score"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_emp_evaluation_ninety_form" model="ir.ui.view">
+        <field name="name">emp.evaluation.ninety.form</field>
+        <field name="model">emp.evaluation.ninety</field>
+        <field name="arch" type="xml">
+            <form string="90 Days Evaluation">
+                <sheet>
+                    <field name="is_self" invisible="1"/>
+                    <field name="allowed_employee_ids" invisible="1"/>
+                    
+                    <header>
+                        <button name="action_submit_to_employee" string="Submit to Employee" type="object" class="oe_highlight"
+                                invisible="state != 'draft'"
+                                groups="evaluation_employee.group_evaluation_coach"/>
+                        
+                        <button name="action_submit_feedback" string="Submit Remarks" type="object" class="btn-primary"
+                                invisible="state != 'reviewed_by_coach' or not is_self"
+                                groups="evaluation_employee.group_evaluation_employee"/>
+                                
+                        <button name="action_confirm" string="Approve Evaluation" type="object" class="oe_highlight"
+                                invisible="state == 'done'"
+                                groups="evaluation_employee.group_evaluation_hr"/>
+                                
+                        <button name="action_preview" string="Print Results" type="object"
+                                invisible="state != 'done'"
+                                groups="evaluation_employee.group_evaluation_hr"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,reviewed_by_coach,waiting_hr_approval,done"/>
+                    </header>
+
+                    <group string="Basic Info" colspan="2">
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}" domain="['|', ('coach_id.user_id', '=', uid), ('parent_id.user_id', '=', uid)]"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="start_date" readonly="state != 'draft'" widget="ethiopian_date"/>
+                            <field name="end_date" readonly="state != 'draft'" widget="ethiopian_date"/>
+                        </group>
+                        <group>
+                            <field name="department_id" readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                            <field name="coach_id" readonly="1"/>
+                            <field name="evaluation_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="90 Days Evaluation">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr style="background-color:#eee; text-align:center;">
+                                        <th style="width: 50%;">Evaluation Criteria</th>
+                                        <th style="width: 8%;">Excellent (5)</th>
+                                        <th style="width: 8%;">V.Good (4)</th>
+                                        <th style="width: 8%;">Good (3)</th>
+                                        <th style="width: 8%;">Satisfactory (2)</th>
+                                        <th style="width: 8%;">Poor (1)</th>
+                                        <th style="width: 10%;">NA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>1. Job knowledge</strong><br/><span style="color:#888;">ስለስራው ያለው ዕውቀት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q1" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>2. Work quality</strong><br/><span style="color:#888;">የስራ ጥራት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q2" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>3. Innovative thinking</strong><br/><span style="color:#888;">የፈጠራ አስተሳሰብ</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q3" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>4. Attendance</strong><br/><span style="color:#888;">በስራ ሰዓት ማክበር</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q4" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>5. Productivity</strong><br/><span style="color:#888;">የስራ ምርታማነት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q5" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>6. Communication</strong><br/><span style="color:#888;">የስራ ግንኙነት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q6" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>7. Dependability</strong><br/><span style="color:#888;">ራስን ችሎ መስራት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q7" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>8. Problem solving</strong><br/><span style="color:#888;">ችግሮችን የመፍታት</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q8" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>9. Responsibility</strong><br/><span style="color:#888;">ሃላፊነትን የመሸከም</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q9" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>10. Administration</strong><br/><span style="color:#888;">ስራዎችን በስዓቱ የማስተዳደር</span></td>
+                                        <td colspan="6" class="radio-row"><field name="q10" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <separator string="Comments &amp; Remarks" />
+                            <group>
+                                <field name="manager_comment" placeholder="Immediate supervisor / Coach remarks..." readonly="state != 'draft'"/>
+                                <field name="employee_comment" placeholder="Employee's feedback or remarks..." readonly="state != 'reviewed_by_coach' or not is_self"/>
+                            </group>
+                            <group>
+                                <div class="oe_right oe_button_box" style="font-size:1.4em; font-weight:bold; margin-top:20px;">
+                                    Total Score: <field name="total_score" readonly="1" class="oe_inline"/>
+                                </div>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== HR EVALUATION VIEWS ==================== -->
+    <record id="view_emp_evaluation_hr_tree" model="ir.ui.view">
+        <field name="name">emp.evaluation.hr.tree</field>
+        <field name="model">emp.evaluation.hr</field>
+        <field name="arch" type="xml">
+            <list string="HR Evaluations" decoration-info="state == 'draft'" decoration-warning="state == 'reviewed_by_coach'" decoration-success="state == 'done'">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="start_date" widget="ethiopian_date"/>
+                <field name="end_date" widget="ethiopian_date"/>
+                <field name="total_score"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_emp_evaluation_hr_form" model="ir.ui.view">
+        <field name="name">emp.evaluation.hr.form</field>
+        <field name="model">emp.evaluation.hr</field>
+        <field name="arch" type="xml">
+            <form string="HR Evaluation">
+                <sheet>
+                    <field name="is_self" invisible="1"/>
+                    <field name="allowed_employee_ids" invisible="1"/>
+                    
+                    <header>
+                        <button name="action_submit_to_employee" string="Submit to Employee" type="object" class="oe_highlight"
+                                invisible="state != 'draft'"
+                                groups="evaluation_employee.group_evaluation_coach"/>
+                        
+                        <button name="action_submit_feedback" string="Submit Remarks" type="object" class="btn-primary"
+                                invisible="state != 'reviewed_by_coach' or not is_self"
+                                groups="evaluation_employee.group_evaluation_employee"/>
+                                
+                        <button name="action_confirm" string="Approve Evaluation" type="object" class="oe_highlight"
+                                invisible="state == 'done'"
+                                groups="evaluation_employee.group_evaluation_hr"/>
+                                
+                        <button name="action_preview" string="Print Results" type="object"
+                                invisible="state != 'done'"
+                                groups="evaluation_employee.group_evaluation_hr"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,reviewed_by_coach,waiting_hr_approval,done"/>
+                    </header>
+
+                    <group string="Basic Info" colspan="2">
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="start_date" readonly="state != 'draft'" widget="ethiopian_date"/>
+                            <field name="end_date" readonly="state != 'draft'" widget="ethiopian_date"/>
+                        </group>
+                        <group>
+                            <field name="department_id" readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                            <field name="coach_id" readonly="1"/>
+                            <field name="evaluation_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="HR Evaluation">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr style="background-color:#eee; text-align:center;">
+                                        <th style="width: 50%;">Evaluation Criteria</th>
+                                        <th style="width: 8%;">Excellent (5)</th>
+                                        <th style="width: 8%;">V.Good (4)</th>
+                                        <th style="width: 8%;">Good (3)</th>
+                                        <th style="width: 8%;">Satisfactory (2)</th>
+                                        <th style="width: 8%;">Poor (1)</th>
+                                        <th style="width: 10%;">NA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>1. In terms of working in compliance with the firms working hoursTouching the Attendance footprint when it comes into and out of office, filling out Case Management; it involves filling a year off while remaining out of work </strong><br/>የድርጅቱን የስራ ሰአት አክብሮ መስራት ወደ ቢሮ ሲገባ እና ሲወጣ የአቴንዳንስ አሻራ መንካት፣ኬዝ ማኔጅመንት መሙላት፤ከስራ ቦታ ሲቀር የአመት እረፍት መሙላትን ያካትታል።<br/><span style="color:#888;">.<br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q1" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>2. In terms of appropriately owning property given to work Caring the property of the organization as its own property without being damaged; ensuring that after work a laptop is tied up; ensuring that documents are placed in the appropriate location; that lockers are locked in; that it involves fixing where it worked</strong><br/>ለስራ የተሰጠውን ንብረት በአግባቡ ከመያዝ አንጻር የድርጅቱን ንብረት ሳይበላሹ እንደራሱ ንብረት አድርጎ መንከባከብ፤ከስራ በኋላ ላፕቶፕ መታሰሩን፤ ሰነዶች አግባብ ባለው ቦታ መቀመጣቸውን ማረጋገጥ፤ሎከሮች መቆለፋቸውን፤የሰራበትን ቦታ ማስተካከልን ያካትታል<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q2" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>3. In terms of giving his colleagues due respect Good relations with employees at the firm; his displays in office include good ethics</strong><br/>ለስራ ባልደረቦቹ ተገቢውን ክብር ከመስጠት አንጻር በድርጅቱ ውስጥ ከሚገኙ ሰራተኞች ጋር ያለው መልካም ግንኙነት፤በቢሮ ውስጥ የሚያሳያቸው ጥሩ ስነምግባሮችን ያካትታል<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q3" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>4. In terms of working in keeping with the secrecy of the organization Not giving up to the 3rd party who doesn't see the internal practices that the organization operates on; we don't tell them, it includes loyalty to the organization</strong><br/>የድርጅቱን ምስጢራዊነት ጠብቆ ከመስራት አንጻርድርጅቱ የሚሰራባቸውን የውስጥ አሰራሮች ለማይመለከተው ለ3ኛ ወገን አሳልፎ አለመስጠት፤አለመንገርን፤ለድርጅቱ ያለው ታማኝነትን ያካትታል<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q4" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>5. In terms of working in compliance with the internal guidelines of the organization Human Resource Management Guidelines include the use of overtime payments, the use of IDs, and the use of SIM cards</strong><br/>የድርጅቱን ውስጣዊ መመሪያዎችን አክብሮ ከመስራት አንጻር የሰው ሃብት አስተዳደር መመሪያዎች የትርፍ ሰአት ክፍያ አጠቃቀም ፤የመታወቂያ አጠቃቀም ፤ የሲም ካርድ አጠቃቀም መመሪያን አቆና ተረድቶ መስራትን ያካትታል<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q5" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>6. In terms of motivation to enhance one's own abilities and abilities Includes the motivation to develop oneself through various trainings, education, and work-related professions</strong><br/>የራስን አቅምና ችሎታ ለማሳደግ ካለው ተነሳሽነት አንጻር ራሱን በልዩ ልዩ ስልጠናዎች ፤በትምህርት፤ከስራው ጋር ተያያዥነት ያላቸውን ሙያዎች ለማሳደግ ያለው ተነሳሽነትን ያካትታል<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q6" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>7. In terms of maintaining ethics in the office Dress code in the office, act as the identity of the organization, and sincerely accept the feedback from the immediate supervisor and the employees of the organization</strong><br/>የቢሮ ውስጥ ስነምግባርን ጠብቆ ከመስራት አንጻር የቢሮ ውስጥ የአለባበስ ስነ ስርአት መልበስ፤የድርጅቱን መታወቂያ አድርጎ መስራት፤ከቅርብ የስራ ሃላፊና ከድርጅቱ ሰራተኞች የሚሰጡትን አስተያየት በቅንነት ተቀብሎ መስራትን ያካትታል።<br/><span style="color:#888;">.<br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q7" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>8. In terms of problem solving Includes the motivation and commitment to work as part of the solution rather than exacerbating problems and running away from the problems in the department where they work.</strong><br/>ችግሮችን ከመፍታት አንጻር በሚሰራበት ክፍል ውስጥ የሚከሰቱ ችግሮችን ለመፍታትና በቀጣይም ችግሮች እንዳይከሰቱ ለማድረግ፤ችግሮችን ከማባባስና ምን አገባኝ ብሎ ከመሸሽ ይልቅ የመፍትሄ አካል ሆኖ ለመስራት ያለው ተነሳሽነትና ቁርጠኝነትን ያካትታል።<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q8" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>9. In terms of operating in respect of the values of the organizationIt includes being free from various addictions, working according to a hierarchical system, being loyal to the organization, and treating the customer with due service respect.</strong><br/>የድርጅቱን እሴቶች አክብሮ ከመስራት አንጻር ከተለያዩ ደባል ሱሶች ነጻ መሆንን፤ ተዋረዳዊ አሰራርን ተከትሎ መስራትን፤ለድርጅቱ ታማኝ ሆኖ መስራትን፤ለደንበኛን  ተገቢውን የአገልጋይነት ክብር ሰጥቶ መስራትን ያካትታል።<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q9" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                    <tr style="background-color:#f7f3f5;">
+                                        <td><strong>10. Admitting a fault at work in terms of self-improvement for the next job It involves the improvement of the situation in order to correct the mistakes made by his immediate supervisor and colleagues when he is told about the mistakes he makes during work.</strong><br/>የስራ ላይ ጥፋትን አምኖ በመቀበል ለቀጣይ ስራ ራስን አሻሽሎ ከመስራት አንጻር በስራ ወቅት ለሚያጠፋቸው ጥፋቶች በቅርብ ሃላፊውና በስራ ባልደረቦቹ ሲነገረው በቅንነት በማየት ከስህተቱ ለመታረም የሚያሳየው የመሻሻል ሁኔታን ያካትታል።<br/><span style="color:#888;"><br/></span></td>
+                                        <td colspan="6" class="radio-row"><field name="q10" widget="radio" nolabel="1" class="o_horizontal_radio" readonly="state != 'draft'"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <separator string="Comments &amp; Remarks" />
+                            <group>
+                                <field name="manager_comment" placeholder="Immediate supervisor / Coach remarks..." readonly="state != 'draft'"/>
+                                <field name="employee_comment" placeholder="Employee's feedback or remarks..." readonly="state != 'reviewed_by_coach' or not is_self"/>
+                            </group>
+                            <group>
+                                <div class="oe_right oe_button_box" style="font-size:1.4em; font-weight:bold; margin-top:20px;">
+                                    Total Score: <field name="total_score" readonly="1" class="oe_inline"/>
+                                </div>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
 </odoo>
