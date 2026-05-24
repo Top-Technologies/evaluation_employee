@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== REPORT ACTIONS ==================== -->
+    <record id="action_report_emp_evaluation" model="ir.actions.report">
+        <field name="name">Employee 3-Month Evaluation</field>
+        <field name="model">emp.evaluation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">evaluation_employee.report_emp_evaluation_document</field>
+        <field name="report_file">evaluation_employee.report_emp_evaluation_document</field>
+        <field name="print_report_name">'3-Month Evaluation - %s' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="model_emp_evaluation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_emp_evaluation_sixty" model="ir.actions.report">
+        <field name="name">Employee 60-Day Evaluation</field>
+        <field name="model">emp.evaluation.sixty</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">evaluation_employee.report_emp_evaluation_sixty_document</field>
+        <field name="report_file">evaluation_employee.report_emp_evaluation_sixty_document</field>
+        <field name="print_report_name">'60-Day Evaluation - %s' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="model_emp_evaluation_sixty"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_emp_evaluation_ninety" model="ir.actions.report">
+        <field name="name">Employee 90-Day Evaluation</field>
+        <field name="model">emp.evaluation.ninety</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">evaluation_employee.report_emp_evaluation_ninety_document</field>
+        <field name="report_file">evaluation_employee.report_emp_evaluation_ninety_document</field>
+        <field name="print_report_name">'90-Day Evaluation - %s' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="model_emp_evaluation_ninety"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_emp_evaluation_hr" model="ir.actions.report">
+        <field name="name">Employee HR Evaluation</field>
+        <field name="model">emp.evaluation.hr</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">evaluation_employee.report_emp_evaluation_hr_document</field>
+        <field name="report_file">evaluation_employee.report_emp_evaluation_hr_document</field>
+        <field name="print_report_name">'HR Evaluation - %s' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="model_emp_evaluation_hr"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ==================== COMMON HEADER/INFO LAYOUT ==================== -->
+    <template id="report_evaluation_info_header">
+        <div class="row mt32 mb32">
+            <div class="col-6">
+                <strong>Employee:</strong> <span t-field="o.employee_id"/>
+            </div>
+            <div class="col-6">
+                <strong>Department:</strong> <span t-field="o.department_id"/>
+            </div>
+        </div>
+        <div class="row mt32 mb32">
+            <div class="col-6">
+                <strong>Job Title:</strong> <span t-field="o.job_id"/>
+            </div>
+            <div class="col-6">
+                <strong>Manager:</strong> <span t-field="o.manager_id"/>
+            </div>
+            <div class="col-6 mt8">
+                <strong>Coach:</strong> <span t-field="o.coach_id"/>
+            </div>
+            <div class="col-6 mt8">
+                <strong>Period:</strong>
+                <span t-esc="o.get_ethiopian_date_str(o.start_date)"/> - <span t-esc="o.get_ethiopian_date_str(o.end_date)"/>
+            </div>
+        </div>
+    </template>
+
+    <!-- ==================== COMMON COMMENTS & SIGNATURE LAYOUT ==================== -->
+    <template id="report_evaluation_footer">
+        <div class="row mt32">
+            <div class="col-12">
+                <strong>Total Score:</strong> <span t-field="o.total_score"/>
+            </div>
+        </div>
+        <div class="row mt32">
+            <div class="col-12">
+                <strong>Manager/Coach Comment:</strong> <span t-field="o.manager_comment"/>
+            </div>
+        </div>
+        <div class="row mt32">
+            <div class="col-12">
+                <strong>Employee's Remarks:</strong> <span t-field="o.employee_comment"/>
+            </div>
+        </div>
+        <div class="row mt64">
+            <div class="col-6">
+                <div class="mt32"><strong>Coach Signature:</strong></div>
+                <div class="mt16"><span>_______________________________</span></div>
+                <div class="mt8"><strong>Name: </strong><span t-field="o.coach_id"/></div>
+                <div class="mt8"><strong>Date: </strong>_______________________</div>
+            </div>
+            <div class="col-6">
+                <div class="mt32"><strong>Employee Signature:</strong></div>
+                <div class="mt16"><span>_______________________________</span></div>
+                <div class="mt8"><strong>Name: </strong><span t-field="o.employee_id"/></div>
+                <div class="mt8"><strong>Date: </strong>_______________________</div>
+            </div>
+        </div>
+    </template>
+
+    <!-- ==================== 3 MONTH EVALUATION REPORT ==================== -->
+    <template id="report_emp_evaluation_document">
+        <t t-call="web.html_container">
+            <!-- Questions Dictionary -->
+            <t t-set="criteria" t-value="{
+                1: '1. Skill and proficiency in carrying out assignments in real time manner&lt;br/&gt; የተሰጡትን ስራዎች በተሰጠው ግዜ ለማከናወን ችሎታ እና ብቃት አለው',
+                2: '2. Possesses skills and knowledge to perform the job competently&lt;br/&gt;ስራውን በብቃት ለማከናወን ችሎታ እና እውቀት አለው።',
+                3: '3. Skill at planning, organizing and prioritizing workloads&lt;br/&gt;የሥራ ጫናን በማቀድ, በማደራጀት እና ቅድሚያ የመስጠት ችሎታ አለው',
+                4: '4. Holds self accountable for assigned responsibilities; sees tasks through to completion in a timely manner&lt;br/&gt;ለተሰጡት ኃላፊነቶች እራስን ተጠያቂ ያደርጋል; ሥራዎችን በጊዜው እስከ ማጠናቀቅያ ድረስ ይመለከታል',
+                5: '5. Proficiency at improving work methods and procedures as a means toward greater efficiency&lt;br/&gt;ለበለጠ ውጤታማነት የስራ ዘዴዎችን እና ሂደቶችን የማሻሻ ብቃት አለው',
+                6: '6. Communicates effectively with supervisor, peers, and customers&lt;br/&gt;ከሱፐርቫይዘሮች፣ እኩዮች እና ደንበኞች ጋር በብቃት ይግባባል',
+                7: '7. Ability to work independently&lt;br/&gt;እራሱን ችሎ የመስራት ብቃት አለው',
+                8: '8. Ability to work cooperatively with supervision or as part of a team&lt;br/&gt;ከክትትል ወይም ከቡድን አካል ጋር በትብብር የመስራት ችሎታ አለው',
+                9: '9. Willingness to take on additional responsibilities&lt;br/&gt;ተጨማሪ ኃላፊነቶችን ለመውሰድ ፈቃደኛነት አለው',
+                10: '10. Reliability (attendance, punctuality, meeting deadlines)&lt;br/&gt;አስተማማኝነት (በመገኘት፣ የስራ ሰዓቱን በማክበር፣ የስብሰባ ቀነ-ገደቦች በመጠበቅ)',
+                11: '1. Skill and proficiency in carrying out assignments in real time manner&lt;br/&gt; የተሰጡትን ስራዎች በተሰጠው ግዜ ለማከናወን ችሎታ እና ብቃት አለው',
+                12: '2. Possesses skills and knowledge to perform the job competently&lt;br/&gt;ስራውን በብቃት ለማከናወን ችሎታ እና እውቀት አለው።',
+                13: '3. Skill at planning, organizing and prioritizing workloads&lt;br/&gt;የሥራ ጫናን በማቀድ, በማደራጀት እና ቅድሚያ የመስጠት ችሎታ አለው',
+                14: '4. Holds self accountable for assigned responsibilities; sees tasks through to completion in a timely manner&lt;br/&gt;ለተሰጡት ኃላፊነቶች እራስን ተጠያቂ ያደርጋል; ሥራዎችን በጊዜው እስከ ማጠናቀቅያ ድረስ ይመለከታል',
+                15: '5. Proficiency at improving work methods and procedures as a means toward greater efficiency&lt;br/&gt;ለበለጠ ውጤታማነት የስራ ዘዴዎችን እና ሂደቶችን የማሻሻ ብቃት አለው',
+                16: '6. Communicates effectively with supervisor, peers, and customers&lt;br/&gt;ከሱፐርቫይዘሮች፣ እኩዮች እና ደንበኞች ጋር በብቃት ይግባባል',
+                17: '7. Ability to work independently&lt;br/&gt;እራሱን ችሎ የመስራት ብቃት አለው',
+                18: '8. Ability to work cooperatively with supervision or as part of a team&lt;br/&gt;ከክትትል ወይም ከቡድን አካል ጋር በትብብር የመስራት ችሎታ አለው',
+                19: '9. Willingness to take on additional responsibilities&lt;br/&gt;ተጨማሪ ኃላፊነቶችን ለመውሰድ ፈቃደኛነት አለው',
+                20: '10. Reliability (attendance, punctuality, meeting deadlines)&lt;br/&gt;አስተማማኝነት (በመገኘት፣ የስራ ሰዓቱን በማክበር፣ የስብሰባ ቀነ-ገደቦች በመጠበቅ)',
+                21: '11. Adeptness at analyzing facts, problem solving, decision-making, and demonstrating good judgment&lt;br/&gt;እውነታዎችን በመተንተን፣ ችግር በመፍታት፣ ውሳኔ በመስጠት እና ጥሩ የማመዛዘን ችሎታን በማሳየት',
+                22: '12. Displays fairness towards all subordinates&lt;br/&gt;ለሁሉም የበታች ሰራተኞች ፍትሃዊነትን ያሳያል።',
+                23: '13. Identifies performance expectations, gives timely feedback and conducts formal evaluations&lt;br/&gt;የለአፈፃፀም የሚጠበቁትን ቁልፍ ነገሮች ይለያል, ወቅታዊ አስተያየት ይሰጣል እና የክፍሉን መደበኛ የስራ አፈጻጸም ግምገማዎችን በየግዜው ያካሂዳል.',
+                24: '14. Helps employees to see the potential for developing their skills; assists them in eliminating barriers to their development&lt;br/&gt; ሰራተኞቹ ክህሎቶቻቸውን በማዳበር አቅማቸውን እንዲገነዘቡ ይረዳል; በእድገታቸው ላይ እንቅፋቶችን ለማስወገድ ይረዳቸዋል',
+                25: '15. Delegates responsibility where appropriate, based on the employee’s ability and potential&lt;br/&gt;በተቀጣሪው አቅም እና ችሎታ ላይ በመመስረት ሃላፊነትን በተገቢው ቦታ ያስተላልፋል.'
+            }"/>
+
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>3 Month Employee Evaluation</h2>
+                        <t t-call="evaluation_employee.report_evaluation_info_header"/>
+
+                        <h3>Evaluation Criteria</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Evaluation Criteria</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="q_range" t-value="range(1, 11) if o.eval_employee_type == 'standard' else range(11, 26)"/>
+                                <t t-foreach="q_range" t-as="i">
+                                    <tr>
+                                        <td><t t-raw="criteria[i]"/></td>
+                                        <td><span t-esc="o['q' + str(i)]"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <t t-call="evaluation_employee.report_evaluation_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- ==================== 60 DAYS EVALUATION REPORT ==================== -->
+    <template id="report_emp_evaluation_sixty_document">
+        <t t-call="web.html_container">
+            <t t-set="criteria" t-value="{
+                1: '1. Job knowledge&lt;br/&gt;ስለስራው ያለው ዕውቀት (Possesses skills and knowledge to perform the job competently)',
+                2: '2. Work quality&lt;br/&gt;የስራ ጥራት (Quality of output and accuracy of assignments)',
+                3: '3. Innovative thinking&lt;br/&gt;የፈጠራ አስተሳሰብ (Ability to develop new ideas/efficiency)',
+                4: '4. Attendance&lt;br/&gt;በስራ ሰዓት ማክበር (Reliability, punctuality and meeting deadlines)',
+                5: '5. Productivity&lt;br/&gt;የስራ ምርታማነት (Volume of work completed under ordinary conditions)',
+                6: '6. Communication&lt;br/&gt;የስራ ግንኙነት (Communicates effectively with supervisors and peers)',
+                7: '7. Dependability&lt;br/&gt;ራስን ችሎ መስራት (Ability to work independently)',
+                8: '8. Problem solving&lt;br/&gt;ችግሮችን የመፍታት (Analytical skills and problem identification)',
+                9: '9. Responsibility&lt;br/&gt;ሃላፊነትን የመሸከም (Willingness to take on tasks and accountability)',
+                10: '10. Administration&lt;br/&gt;ስራዎችን በስዓቱ የማስተዳደር (Organizing, prioritizing and scheduling tasks)'
+            }"/>
+
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>60 Days Employee Evaluation</h2>
+                        <t t-call="evaluation_employee.report_evaluation_info_header"/>
+
+                        <h3>Evaluation Criteria</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Evaluation Criteria</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="range(1, 11)" t-as="i">
+                                    <tr>
+                                        <td><t t-raw="criteria[i]"/></td>
+                                        <td><span t-esc="o['q' + str(i)]"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <t t-call="evaluation_employee.report_evaluation_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- ==================== 90 DAYS EVALUATION REPORT ==================== -->
+    <template id="report_emp_evaluation_ninety_document">
+        <t t-call="web.html_container">
+            <t t-set="criteria" t-value="{
+                1: '1. Job knowledge&lt;br/&gt;ስለስራው ያለው ዕውቀት (Possesses skills and knowledge to perform the job competently)',
+                2: '2. Work quality&lt;br/&gt;የስራ ጥራት (Quality of output and accuracy of assignments)',
+                3: '3. Innovative thinking&lt;br/&gt;የፈጠራ አስተሳሰብ (Ability to develop new ideas/efficiency)',
+                4: '4. Attendance&lt;br/&gt;በስራ ሰዓት ማክበር (Reliability, punctuality and meeting deadlines)',
+                5: '5. Productivity&lt;br/&gt;የስራ ምርታማነት (Volume of work completed under ordinary conditions)',
+                6: '6. Communication&lt;br/&gt;የስራ ግንኙነት (Communicates effectively with supervisors and peers)',
+                7: '7. Dependability&lt;br/&gt;ራስን ችሎ መስራት (Ability to work independently)',
+                8: '8. Problem solving&lt;br/&gt;ችግሮችን የመፍታት (Analytical skills and problem identification)',
+                9: '9. Responsibility&lt;br/&gt;ሃላፊነትን የመሸከም (Willingness to take on tasks and accountability)',
+                10: '10. Administration&lt;br/&gt;ስራዎችን በስዓቱ የማስተዳደር (Organizing, prioritizing and scheduling tasks)'
+            }"/>
+
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>90 Days Employee Evaluation</h2>
+                        <t t-call="evaluation_employee.report_evaluation_info_header"/>
+
+                        <h3>Evaluation Criteria</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Evaluation Criteria</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="range(1, 11)" t-as="i">
+                                    <tr>
+                                        <td><t t-raw="criteria[i]"/></td>
+                                        <td><span t-esc="o['q' + str(i)]"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <t t-call="evaluation_employee.report_evaluation_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- ==================== HR EVALUATION REPORT ==================== -->
+    <template id="report_emp_evaluation_hr_document">
+        <t t-call="web.html_container">
+            <t t-set="criteria" t-value="{
+                1: '1. In terms of working in compliance with the firms working hours.&lt;br/&gt;&lt;strong&gt;የድርጅቱን የስራ ሰአት አክብሮ መስራት&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Attendance fingerprint, case management, leave compliance.&lt;/small&gt;',
+                2: '2. In terms of appropriately owning property given to work&lt;br/&gt;&lt;strong&gt;ለስራ የተሰጠውን ንብረት በአግባቡ ከመያዝ አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Protecting organization laptops, documents, locker safety.&lt;/small&gt;',
+                3: '3. In terms of giving his colleagues due respect&lt;br/&gt;&lt;strong&gt;ለስራ ባልደረቦቹ ተገቢውን ክብር ከመስጠት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Relations with peers, good ethics and workplace behavior.&lt;/small&gt;',
+                4: '4. In terms of working in keeping with the secrecy of the organization&lt;br/&gt;&lt;strong&gt;የድርጅቱን ምስጢራዊነት ጠብቆ ከመስራት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Protecting confidential details, loyalty to firm.&lt;/small&gt;',
+                5: '5. In terms of working in compliance with the internal guidelines of the organization&lt;br/&gt;&lt;strong&gt;የድርጅቱን ውስጣዊ መመሪያዎችን አክብሮ ከመስራት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;HR guidelines, overtime payments, ID use.&lt;/small&gt;',
+                6: '6. In terms of motivation to enhance one\'s own abilities and abilities&lt;br/&gt;&lt;strong&gt;የራስን አቅምና ችሎታ ለማሳደግ ካለው ተነሳሽነት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Motivation to grow through trainings and education.&lt;/small&gt;',
+                7: '7. In terms of maintaining ethics in the office&lt;br/&gt;&lt;strong&gt;የቢሮ ውስጥ ስነምግባርን ጠብቆ ከመስራት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Dress code, identity card, supervisors feedback reception.&lt;/small&gt;',
+                8: '8. In terms of problem solving&lt;br/&gt;&lt;strong&gt;ችግሮችን ከመፍታት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Solution oriented mindset rather than escaping issues.&lt;/small&gt;',
+                9: '9. In terms of operating in respect of the values of the organization&lt;br/&gt;&lt;strong&gt;የድርጅቱን እሴቶች አክብሮ ከመስራት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Ethics, clean record, hierarchical alignment, customer service.&lt;/small&gt;',
+                10: '10. Admitting a fault at work in terms of self-improvement for the next job&lt;br/&gt;&lt;strong&gt;የስራ ላይ ጥፋትን አምኖ በመቀበል ለቀጣይ ስራ ራስን አሻሽሎ ከመስራት አንጻር&lt;/strong&gt;&lt;br/&gt;&lt;small style=&quot;color:#555;&quot;&gt;Receiving constructive feedback and correcting mistakes.&lt;/small&gt;'
+            }"/>
+
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>HR Employee Evaluation</h2>
+                        <t t-call="evaluation_employee.report_evaluation_info_header"/>
+
+                        <h3>Evaluation Criteria</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Evaluation Criteria</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="range(1, 11)" t-as="i">
+                                    <tr>
+                                        <td><t t-raw="criteria[i]"/></td>
+                                        <td><span t-esc="o['q' + str(i)]"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <t t-call="evaluation_employee.report_evaluation_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

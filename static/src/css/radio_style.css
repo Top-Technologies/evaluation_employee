@@ -1,0 +1,68 @@
+/* Make radio buttons align properly */
+.o_horizontal_radio .o_radio_item {
+    display: inline-flex !important;
+    flex-direction: row-reverse;
+    align-items: center !important;
+    justify-content: center;
+    width: 100px;             
+    margin: 4px 6px !important;
+    gap: 6px;                  
+}
+
+/* Remove wrong spacing */
+.o_horizontal_radio .o_radio_item input[type="radio"] {
+    transform: scale(1.2);
+    margin: 0;                 
+}
+
+/* Optional: clean text spacing */
+.o_horizontal_radio .o_radio_item span {
+    white-space: nowrap;       
+}
+
+/* Center group */
+.radio-row {
+    text-align: center;
+}
+
+/* Optional: increase clickable size of radio buttons */
+.o_horizontal_radio .o_radio_item input[type="radio"] {
+    transform: scale(1.2);
+    margin-right: 4px;
+}
+.status-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.status-buttons .btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: default;
+  display: inline-block;
+}
+
+.btn-confirm {
+  background-color: #5f259f;
+  color: white;
+}
+
+.btn-preview {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-draft {
+  background-color: #d0e8ff;
+  border: 1px solid #3399ff;
+  color: #3399ff;
+}
+
+.btn-posted {
+  background-color: white;
+  border: 1px solid #ccc;
+  color: #333;
+}
