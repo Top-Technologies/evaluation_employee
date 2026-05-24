@@ -1,32 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
-    <!-- ==================== COMMON STYLE DEFINITIONS ==================== -->
-    <record id="view_evaluation_assets" model="ir.ui.view">
-        <field name="name">evaluation.assets</field>
-        <field name="model">emp.evaluation</field>
-        <field name="arch" type="xml">
-            <form string="Dummy">
-                <style>
-                    /* Custom Radio Styling and Table Alignment */
-                    .radio-row {
-                        text-align: center;
-                        vertical-align: middle !important;
-                    }
-                    .o_horizontal_radio .o_radio_item {
-                        display: inline-block;
-                        margin-right: 15px;
-                        font-weight: bold;
-                    }
-                    .o_horizontal_radio .o_radio_input {
-                        margin-right: 4px;
-                        transform: scale(1.15);
-                    }
-                </style>
-            </form>
-        </field>
-    </record>
-
     <!-- ==================== 3 MONTH EVALUATION VIEWS ==================== -->
     <record id="view_emp_evaluation_tree" model="ir.ui.view">
         <field name="name">emp.evaluation.tree</field>
@@ -48,7 +22,7 @@
         <field name="name">emp.evaluation.form</field>
         <field name="model">emp.evaluation</field>
         <field name="arch" type="xml">
-            <form string="3 Month Evaluation">
+            <form string="3 Month Evaluation" class="o_evaluation_form">
                 <sheet>
                     <field name="is_self" invisible="1"/>
                     <field name="eval_employee_type" invisible="1"/>
@@ -330,7 +304,7 @@
         <field name="name">emp.evaluation.sixty.form</field>
         <field name="model">emp.evaluation.sixty</field>
         <field name="arch" type="xml">
-            <form string="60 Days Evaluation">
+            <form string="60 Days Evaluation" class="o_evaluation_form">
                 <sheet>
                     <field name="is_self" invisible="1"/>
                     <field name="allowed_employee_ids" invisible="1"/>
@@ -467,7 +441,7 @@
         <field name="name">emp.evaluation.ninety.form</field>
         <field name="model">emp.evaluation.ninety</field>
         <field name="arch" type="xml">
-            <form string="90 Days Evaluation">
+            <form string="90 Days Evaluation" class="o_evaluation_form">
                 <sheet>
                     <field name="is_self" invisible="1"/>
                     <field name="allowed_employee_ids" invisible="1"/>
@@ -604,7 +578,7 @@
         <field name="name">emp.evaluation.hr.form</field>
         <field name="model">emp.evaluation.hr</field>
         <field name="arch" type="xml">
-            <form string="HR Evaluation">
+            <form string="HR Evaluation" class="o_evaluation_form">
                 <sheet>
                     <field name="is_self" invisible="1"/>
                     <field name="allowed_employee_ids" invisible="1"/>

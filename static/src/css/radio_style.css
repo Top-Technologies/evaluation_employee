@@ -1,5 +1,5 @@
-/* Make radio buttons align properly */
-.o_horizontal_radio .o_radio_item {
+/* Make radio buttons align properly - Scoped to Evaluation Forms */
+.o_evaluation_form .o_horizontal_radio .o_radio_item {
     display: inline-flex !important;
     flex-direction: row-reverse;
     align-items: center !important;
@@ -10,33 +10,35 @@
 }
 
 /* Remove wrong spacing */
-.o_horizontal_radio .o_radio_item input[type="radio"] {
+.o_evaluation_form .o_horizontal_radio .o_radio_item input[type="radio"] {
     transform: scale(1.2);
     margin: 0;                 
 }
 
 /* Optional: clean text spacing */
-.o_horizontal_radio .o_radio_item span {
+.o_evaluation_form .o_horizontal_radio .o_radio_item span {
     white-space: nowrap;       
 }
 
 /* Center group */
-.radio-row {
+.o_evaluation_form .radio-row {
     text-align: center;
 }
 
 /* Optional: increase clickable size of radio buttons */
-.o_horizontal_radio .o_radio_item input[type="radio"] {
+.o_evaluation_form .o_horizontal_radio .o_radio_item input[type="radio"] {
     transform: scale(1.2);
     margin-right: 4px;
 }
-.status-buttons {
+
+/* Status Buttons */
+.o_evaluation_form .status-buttons {
   display: flex;
   gap: 10px;
   margin-top: 10px;
 }
 
-.status-buttons .btn {
+.o_evaluation_form .status-buttons .btn {
   padding: 8px 16px;
   border-radius: 6px;
   font-weight: 500;
@@ -45,23 +47,23 @@
   display: inline-block;
 }
 
-.btn-confirm {
+.o_evaluation_form .btn-confirm {
   background-color: #5f259f;
   color: white;
 }
 
-.btn-preview {
+.o_evaluation_form .btn-preview {
   background-color: #e0e0e0;
   color: #333;
 }
 
-.btn-draft {
+.o_evaluation_form .btn-draft {
   background-color: #d0e8ff;
   border: 1px solid #3399ff;
   color: #3399ff;
 }
 
-.btn-posted {
+.o_evaluation_form .btn-posted {
   background-color: white;
   border: 1px solid #ccc;
   color: #333;
