@@ -49,6 +49,12 @@ class EmpEvaluationBase(models.AbstractModel):
         store=True,
         readonly=True
     )
+    branch = fields.Many2many(
+        'hr.employee.category',
+        string="Branch",
+        related='employee_id.category_ids',
+        readonly=True
+    )
 
     start_date = fields.Date(string="Period Start", default=fields.Date.today)
     end_date = fields.Date(string="Period End", default=fields.Date.today)
