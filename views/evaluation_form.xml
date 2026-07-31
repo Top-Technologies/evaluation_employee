@@ -60,6 +60,7 @@
                             <field name="manager_id" readonly="1"/>
                             <field name="coach_id" readonly="1"/>
                             <field name="evaluation_date" readonly="1"/>
+                            <field name="branch" readonly="1" widget="many2many_tags"/>
                         </group>
                     </group>
 
